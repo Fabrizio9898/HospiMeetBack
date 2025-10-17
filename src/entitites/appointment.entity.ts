@@ -19,9 +19,8 @@ export class Appointment {
   @PrimaryGeneratedColumn("uuid")
   id: string;
 
-  @Column({ type: 'datetime' })
-  fechaHora: Date; // Fecha y hora de la cita
-
+  @Column({ type: "timestamp" })
+  fechaHora: Date // Fecha y hora de la cita
  
   @Column({ type: 'enum', enum:AppointmentStatus,default:AppointmentStatus.PENDING}) // 'reservado', 'completado', 'cancelado'
   estado: string;
