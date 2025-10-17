@@ -11,8 +11,8 @@ import { UserPayment } from './user-payment.entity';
 
 @Entity('doctor_payments')
 export class DoctorPayment {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   montoBruto: number; // Monto total del pago de la cita

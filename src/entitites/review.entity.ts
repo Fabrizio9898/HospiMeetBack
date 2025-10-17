@@ -10,8 +10,8 @@ import { Doctor } from './doctor.entity';
 
 @Entity('reviews')
 export class Review {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Column({ type: 'int', default: 5 }) // 1-5 estrellas
   calificacion: number;

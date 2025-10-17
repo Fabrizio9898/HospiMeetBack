@@ -22,8 +22,6 @@ export class User {
   @Column({ unique: true, length: 50, nullable: false })
   email: string;
 
-  @Column({ default: null })
-  stripeCustomerId: string;
 
   @Column({
     default:
@@ -33,9 +31,6 @@ export class User {
 
   @Column({ length: 128, nullable: true })
   password?: string;
-
-  // @Column({ nullable: true, unique: true })
-  // authtoken?: string;
 
 
   @Column({ type: 'enum', enum: ['PATIENT', 'ADMIN'], default: 'PATIENT' })

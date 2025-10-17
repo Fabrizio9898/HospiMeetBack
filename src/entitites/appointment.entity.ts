@@ -10,22 +10,20 @@ import {
 } from 'typeorm';
 import { User } from './user.entity';
 import { Doctor } from './doctor.entity';
-import { DoctorPayment } from './doctor-payment.entity';
 import { UserPayment } from './user-payment.entity';
 import { DoctorSchedule } from './doctor-schedules.entity';
+import { AppointmentStatus } from 'src/enums/appointment.enum';
 
 @Entity('apointments')
 export class Appointment {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn("uuid")
+  id: string;
 
   @Column({ type: 'datetime' })
   fechaHora: Date; // Fecha y hora de la cita
 
-  @Column({ type: 'varchar', length: 255, nullable: true })
-  notas: string; // Notas del paciente
-
-  @Column({ type: 'varchar', length: 50, default: 'reservado' }) // 'reservado', 'completado', 'cancelado'
+ 
+  @Column({ type: 'enum', enum:AppointmentStatus,default:AppointmentStatus.PENDING}) // 'reservado', 'completado', 'cancelado'
   estado: string;
 
   @ManyToOne(() => User, (usuario) => usuario.appointments, {
@@ -33,23 +31,17 @@ export class Appointment {
   })
   user: User;
 
-  @Column()
-  usuarioId: number;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.appointments, { onDelete: 'CASCADE' })
   doctor: Doctor;
 
-  @Column()
-  doctorId: number;
 
   @OneToOne(() => DoctorSchedule, (schedule) => schedule.appointment, {
     onDelete: 'CASCADE'
   })
+
   @JoinColumn({ name: 'scheduleId' }) // FK explícita en esta tabla
   schedule: DoctorSchedule;
-
-  @Column()
-  horarioId: number;
 
   @OneToOne(() => UserPayment, (pago) => pago.turno)
   pago: UserPayment;

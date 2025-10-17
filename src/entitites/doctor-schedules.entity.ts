@@ -9,11 +9,12 @@ import {
 } from 'typeorm';
 import { Doctor } from './doctor.entity';
 import { Appointment } from './appointment.entity';
+import { DoctorScheduleStatus } from 'src/enums/doctor-schedule.enum';
 
 @Entity('doctor_schedules')
 export class DoctorSchedule {
-  @PrimaryGeneratedColumn()
-  id: number;
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
 
   @Column({ type: 'time' })
   horaInicio: string; // e.g., '14:00:00'
@@ -24,18 +25,18 @@ export class DoctorSchedule {
   @Column({ type: 'date' })
   fecha: string; // e.g., '2025-10-17'
 
-  @Column({ type: 'varchar', length: 50, default: 'disponible' }) // 'disponible', 'reservado', 'cancelado'
-  estado: string;
+  @Column({
+    type: 'enum',
+    enum: DoctorScheduleStatus,
+    default: DoctorScheduleStatus.AVAILABLE
+  }) 
+  estado: DoctorScheduleStatus;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.schedule, {
+  @ManyToOne(() => Doctor, (doctor) => doctor.schedules, {
     onDelete: 'CASCADE'
   })
   doctor: Doctor;
 
-  @Column()
-  doctorId: number;
-
-  // NUEVO: OneToOne inversa con la cita (solo una por slot)
   @OneToOne(() => Appointment, (appointment) => appointment.schedule)
   appointment: Appointment;
 
