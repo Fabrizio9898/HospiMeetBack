@@ -14,6 +14,8 @@ import { Review } from './review.entity';
 import { DoctorPayment } from './doctor-payment.entity';
 import { DoctorSpeciality } from './doctor-especiality.entity';
 import { DoctorAvailability } from './doctor-availability.entity';
+import { Doctor_Status } from 'src/enums/doctorStatus.enum';
+import { DoctorDocument } from './doctor-documentation.entity';
 
 @Entity('doctors')
 export class Doctor {
@@ -24,19 +26,32 @@ export class Doctor {
   email: string;
 
   @Column({ type: 'varchar', length: 255 })
-  password: string; // Hashéalo
+  password: string;
 
   @Column({ type: 'varchar', length: 100 })
-  nombre: string;
+  fullname: string;
 
-  @Column({ type: 'varchar', length: 100 })
-  apellido: string;
+  @Column({ type: 'varchar', length: 20, unique: true })
+  dni: string;
+
+  @Column({ type: 'varchar', length: 50, unique: true })
+  medicalLicenseNumber: string;
+
+  @Column({
+    type: 'enum',
+    enum: Doctor_Status,
+    default: Doctor_Status.PENDING
+  })
+  status: Doctor_Status;
 
   @Column({ type: 'varchar', length: 20 })
-  telefono: string;
+  phoneNumber: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   tarifaPorConsulta: number; // Precio base por cita
+
+  @OneToMany(() => DoctorDocument, (doc) => doc.doctor, { cascade: true })
+  documents: DoctorDocument[];
 
   @OneToMany(() => DoctorSchedule, (horario) => horario.doctor)
   schedules: DoctorSchedule[];
