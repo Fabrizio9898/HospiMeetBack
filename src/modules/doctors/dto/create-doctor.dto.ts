@@ -1,88 +1,49 @@
 import {
   IsEmail,
-  IsEnum,
   IsNotEmpty,
-  IsNumber,
-  IsOptional,
   IsString,
-  Length,
-  Matches,
-  Min
+  IsPhoneNumber,
+  MinLength,
+  MaxLength,
+  Matches
 } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
-import { Doctor_Status } from 'src/enums/doctorStatus.enum';
+
 
 export class CreateDoctorDto {
-  @ApiProperty({
-    example: 'TomHoward@mail.com'
-  })
+  @IsEmail({}, { message: 'Email inválido' })
   @IsNotEmpty()
-  @IsEmail()
-  @Length(3, 50)
+  @MaxLength(100)
   email: string;
 
-  @ApiProperty({ example: 'Password123' })
-  @IsNotEmpty()
   @IsString()
-  @Length(8, 80, { message: 'Password must be at least 8 characters long.' })
-  @Matches(/^(?=.*[A-Z])(?=.*\d).*$/, {
-    message:
-      'Password must contain at least one uppercase letter and one number.'
-  })
+  @IsNotEmpty()
+  @MinLength(8) // Mínimo para password seguro
   password: string;
 
-  @ApiProperty({
-    example: 'Tom Howard'
-  })
-  @IsNotEmpty()
-  @Length(3, 50)
   @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
   @Matches(/^[a-zA-Z\s]+$/, {
     message: 'El nombre solo puede contener letras y espacios'
   })
   fullname: string;
 
-  @ApiProperty({
-    example: '40555111',
-    description: 'Número de documento nacional de identidad'
-  })
   @IsString()
-  @Length(7, 20)
+  @IsNotEmpty()
+  @MaxLength(20)
+  @Matches(/^\d{7,8}$/, { message: 'DNI debe ser 7-8 dígitos' }) // Ej. para Argentina
   dni: string;
 
-  @ApiProperty({
-    example: 'MP-123456',
-    description: 'Número de matrícula profesional (único)'
-  })
   @IsString()
-  @Length(3, 50)
+  @IsNotEmpty()
+  @MaxLength(50)
+  @Matches(/^[A-Z0-9-]{5,20}$/, {
+    message: 'Matrícula inválida (letras/números/guiones)'
+  })
   medicalLicenseNumber: string;
 
-  @ApiProperty({
-    example: '1122334455',
-    description: 'Número de teléfono de contacto'
-  })
-  @IsString()
-  @Length(6, 20)
+  @IsPhoneNumber('AR') // Ajusta por país, ej. 'AR' para Argentina
+  @IsNotEmpty()
+  @MaxLength(20)
   phoneNumber: string;
-
-  @ApiProperty({
-    example: 2500.0,
-    description: 'Tarifa base por consulta en pesos'
-  })
-  @IsNumber()
-  @Min(0)
-  tarifaPorConsulta: number;
-
-  @ApiProperty({
-    example: Doctor_Status.PENDING,
-    enum: Doctor_Status,
-    description: 'Estado del registro del doctor',
-    default: Doctor_Status.PENDING
-  })
-  @IsEnum(Doctor_Status)
-  @IsOptional()
-  status?: Doctor_Status;
 }
-
-
