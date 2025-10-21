@@ -16,6 +16,7 @@ import { DoctorSpeciality } from './doctor-especiality.entity';
 import { DoctorAvailability } from './doctor-availability.entity';
 import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 import { DoctorDocument } from './doctor-documentation.entity';
+import { UserRole } from 'src/enums/roles.enum';
 
 @Entity('doctors')
 export class Doctor {
@@ -49,6 +50,9 @@ export class Doctor {
 
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   tarifaPorConsulta: number; // Precio base por cita
+
+    @Column({ type: 'enum', enum: UserRole, default: UserRole.DOCTOR })
+    role: UserRole;
 
   @OneToMany(() => DoctorDocument, (doc) => doc.doctor, { cascade: true })
   documents: DoctorDocument[];

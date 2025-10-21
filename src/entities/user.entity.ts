@@ -8,6 +8,7 @@ import {
 } from 'typeorm';
 import { Review } from './review.entity';
 import { Appointment } from './appointment.entity';
+import { UserRole } from 'src/enums/roles.enum';
 
 @Entity({ name: 'users' })
 export class User {
@@ -29,8 +30,8 @@ export class User {
   @Column({ length: 128, nullable: false })
   password: string;
 
-  @Column({ type: 'enum', enum: ['PATIENT', 'ADMIN'], default: 'PATIENT' })
-  role: 'PATIENT' | 'ADMIN';
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.PATIENT })
+  role: UserRole;
 
   @OneToMany(() => Review, (review) => review.user, { nullable: true })
   reviews: Review[];

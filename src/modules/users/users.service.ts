@@ -1,15 +1,16 @@
-import { BadRequestException, Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  InternalServerErrorException
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Repository } from 'typeorm';
-import { isNotEmpty } from 'class-validator';
 import { ApiError } from 'src/helpers/apiError.helper';
 import { ApiStatusEnum } from 'src/enums/apiStatus.enum';
-import { ApiResponse } from './dto/api-response.dto';
 import * as bcrypt from 'bcrypt';
-
 
 @Injectable()
 export class UsersService {
@@ -17,21 +18,23 @@ export class UsersService {
     @InjectRepository(User) private userRepository: Repository<User>
   ) {}
 
-  async create(createUserDto: CreateUserDto): Promise<ApiResponse> {
+  async create(createUserDto: CreateUserDto): Promise<User> {
     try {
       const { email, password, ...restUser } = createUserDto;
       const lower_email = email.toLowerCase();
 
-      if (isNotEmpty(this.getUserByMail(lower_email)))
+      const existingUser = await this.getUserByMail(lower_email);
+
+      if (existingUser) {
         throw new ApiError(ApiStatusEnum.MAIL_IN_USE, BadRequestException);
+      }
 
       const hashed_password = await bcrypt.hash(password, 10);
-
       if (!hashed_password) {
         throw new ApiError(ApiStatusEnum.HASHING_FAILED, BadRequestException);
       }
 
-      const createdUser: User = await this.userRepository.create({
+      const createdUser: User = this.userRepository.create({
         ...restUser,
         email: lower_email,
         password: hashed_password
@@ -39,8 +42,11 @@ export class UsersService {
 
       await this.userRepository.save(createdUser);
 
-      return { message: ApiStatusEnum.REGISTRATION_SUCCESS };
+      return createdUser;
     } catch (error) {
+      if (error instanceof ApiError) {
+        throw error;
+      }
       throw new ApiError(error?.message, InternalServerErrorException, error);
     }
   }
@@ -53,7 +59,7 @@ export class UsersService {
     const found: User | null = await this.userRepository.findOne({
       where: { email: email }
     });
-    return found ? found : undefined;
+    return found || undefined;
   }
 
   findOne(id: string) {

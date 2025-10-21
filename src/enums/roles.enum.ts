@@ -1,7 +1,6 @@
 export enum UserRole {
-  MAIN_MANAGER = 'main_manager',
-  MANAGER = 'manager',
-  USER = 'user',
+  PATIENT = 'patient',
   ADMIN = 'admin',
-  SUPER_ADMIN = 'super_admin'
+  SUPER_ADMIN = 'super_admin',
+  DOCTOR='doctor'
 }
