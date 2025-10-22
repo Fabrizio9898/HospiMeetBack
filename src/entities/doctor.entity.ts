@@ -23,6 +23,12 @@ export class Doctor {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
+  @Column({
+    default:
+      'https://res.cloudinary.com/dvgvcleky/image/upload/f_auto,q_auto/v1/RestO/ffgx6ywlaix0mb3jghux'
+  })
+  profile_image: string;
+  
   @Column({ type: 'varchar', length: 100, unique: true })
   email: string;
 
@@ -51,8 +57,8 @@ export class Doctor {
   @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   tarifaPorConsulta: number; // Precio base por cita
 
-    @Column({ type: 'enum', enum: UserRole, default: UserRole.DOCTOR })
-    role: UserRole;
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.DOCTOR })
+  role: UserRole;
 
   @OneToMany(() => DoctorDocument, (doc) => doc.doctor, { cascade: true })
   documents: DoctorDocument[];
