@@ -1,0 +1,18 @@
+import { PickType, ApiProperty } from '@nestjs/swagger';
+import { Doctor } from 'src/entities/doctor.entity';
+
+export class DoctorPublicDto extends PickType(Doctor, [
+  'id',
+  'fullname',
+  'email',
+  'dni',
+  'phoneNumber',
+  'status',
+  'specialities'
+] as const) {
+  @ApiProperty({
+    example: 3,
+    description: 'Cantidad de especialidades del doctor'
+  })
+  specialtyCount: number;
+}

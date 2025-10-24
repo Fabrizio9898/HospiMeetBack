@@ -1,4 +1,17 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, UsePipes, ValidationPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+  UsePipes,
+  ValidationPipe,
+  ParseUUIDPipe
+} from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
@@ -8,7 +21,7 @@ import { UserRole } from 'src/enums/roles.enum';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { LoginDto } from 'src/dtos/login.dto';
 import { UserLoginResponse } from '../users/auth/dtos/loginResponse.dto';
-import { GetDoctorsQueryDto } from './dto/doctorList.dto';
+import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -31,6 +44,14 @@ export class AdminController {
     return await this.adminService.login(data);
   }
 
+  @Get('doctor-documents/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  async getDoctorDocuments(@Param('id',ParseUUIDPipe) id: string) {
+
+  }
+
   @Get('doctors')
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN)
   @UseGuards(AuthGuard)
@@ -42,6 +63,8 @@ export class AdminController {
   )
   @ApiBearerAuth()
   async getDoctors(@Query() doctorQuery: GetDoctorsQueryDto) {
-    return await this.adminService.getDoctors(doctorQuery.status, doctorQuery.page, doctorQuery.limit);
+    return await this.adminService.getDoctors(
+      doctorQuery
+    );
   }
 }

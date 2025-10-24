@@ -8,7 +8,7 @@ import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import generator from 'generate-password';
 import * as bcrypt from 'bcrypt';
 import { ApiError } from 'src/helpers/apiError.helper';
@@ -20,6 +20,7 @@ import { generateToken } from 'src/utils/jwt.util';
 import { UserLoginResponse } from '../users/auth/dtos/loginResponse.dto';
 import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 import { Doctor } from 'src/entities/doctor.entity';
+import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
 
 @Injectable()
 export class AdminService {
@@ -91,37 +92,62 @@ export class AdminService {
     };
   }
 
-  async getDoctors(status: Doctor_Status, page: number, limit: number) {
-    const query = this.doctorRepository
-      .createQueryBuilder('doctor')
+  async getDoctors(queryDto: GetDoctorsQueryDto) {
+    // 1. Destructura el DTO
+    const {
+      status, // Será 'undefined' si no se envía
+      search,
+      page = 1,
+      limit = 10
+    } = queryDto;
 
+    const query = this.doctorRepository.createQueryBuilder('doctor');
 
-      query.loadRelationCountAndMap(
-      'doctor.specialtyCount', 
-      'doctor.specialities' 
+    query.loadRelationCountAndMap(
+      'doctor.specialtyCount',
+      'doctor.specialities'
     );
-      
 
-    // 2. Preparar el filtro dinámico
-    if (status) {
-      query.where('doctor.status = :status', { status: status });
+    // --- 2. FILTROS DINÁMICOS (CON DEFAULT) ---
+
+    // ¡AQUÍ ESTÁ EL CAMBIO!
+    // Si 'status' es undefined (no se envió), usa PENDING por defecto.
+    const statusToFilter = status || Doctor_Status.PENDING;
+
+    // Ahora la consulta SIEMPRE filtra por un estado.
+    query.where('doctor.status = :status', { status: statusToFilter });
+
+    // Filtro por BÚSQUEDA (si existe)
+    if (search) {
+      // Como ya usamos .where(), ahora SIEMPRE usamos .andWhere()
+      query.andWhere(
+        new Brackets((qb) => {
+          // (Usa 'LIKE' para MySQL, 'ILIKE' para Postgres)
+          qb.where('doctor.fullname ILIKE :search', {
+            search: `%${search}%`
+          })
+            .orWhere('doctor.dni ILIKE :search', { search: `%${search}%` })
+            .orWhere('doctor.email ILIKE :search', { search: `%${search}%` });
+        })
+      );
     }
 
-    // 3. Aplicar paginación
+    query.orderBy('doctor.createdAt', 'DESC');
+
+    // --- 3. PAGINACIÓN ---
     query.skip((page - 1) * limit);
     query.take(limit);
 
-    // 4. La consulta (getManyAndCount)
-    // Nota: es el equivalente a findAndCount
+    // --- 4. EJECUTAR CONSULTA ---
     const [doctors, total] = await query.getManyAndCount();
-  
-  return {
-    data: doctors,
-    total,
-    page,
-    limit,
-    totalPages: Math.ceil(total / limit)
-  };
+
+    return {
+      data: doctors,
+      total,
+      page,
+      limit,
+      totalPages: Math.ceil(total / limit)
+    };
   }
 
   findAll() {
