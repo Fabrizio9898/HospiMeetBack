@@ -53,7 +53,6 @@ export class AdminController {
   async getDoctorDocuments(@Param('id', ParseUUIDPipe) id: string) {}
 
   @Get('doctors')
-  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN)
   @UseGuards(AuthGuard)
   @UsePipes(
     new ValidationPipe({
@@ -65,12 +64,14 @@ export class AdminController {
   async getDoctors(@Query() doctorQuery: GetDoctorsQueryDto) {
     const response = await this.adminService.getDoctors(doctorQuery);
     return plainToInstance(DoctorListResponseDto, response, {
-      excludeExtraneousValues: true 
+      excludeExtraneousValues: true
     });
   }
 
-  @Get("dashboard/kpis")
-  findAll() {
-    return this.adminService.getDashboardKpis();
+  @Get('dashboard/kpis')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  async getKpis() {
+    return await this.adminService.getDashboardKpis();
   }
 }
