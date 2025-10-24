@@ -14,10 +14,10 @@ export class DoctorSpeciality {
   id: string;
 
   @Column({ type: 'varchar', length: 100, unique: true })
-  nombre: string; // ej: 'Medicina General'
+  name: string; // ej: 'Medicina General'
 
   @Column({ type: 'text', nullable: true })
-  descripcion: string; // ej: 'Consultas generales de salud'
+  description: string; // ej: 'Consultas generales de salud'
 
   @ManyToMany(() => Doctor, (doctor) => doctor.specialities) // Si ManyToMany
   doctors: Doctor[];

@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
@@ -6,6 +6,9 @@ import { Roles } from 'src/decorators/roles.decorator';
 import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 import { UserRole } from 'src/enums/roles.enum';
 import { AuthGuard } from 'src/guards/auth.guard';
+import { LoginDto } from 'src/dtos/login.dto';
+import { UserLoginResponse } from '../users/auth/dtos/loginResponse.dto';
+import { GetDoctorsQueryDto } from './dto/doctorList.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -23,4 +26,22 @@ export class AdminController {
     return await this.adminService.create(createAdminDto);
   }
 
+  @Post('login')
+  async login(@Body() data: LoginDto): Promise<UserLoginResponse> {
+    return await this.adminService.login(data);
+  }
+
+  @Get('doctors')
+  @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN)
+  @UseGuards(AuthGuard)
+  @UsePipes(
+    new ValidationPipe({
+      transform: true,
+      whitelist: true
+    })
+  )
+  @ApiBearerAuth()
+  async getDoctors(@Query() doctorQuery: GetDoctorsQueryDto) {
+    return await this.adminService.getDoctors(doctorQuery.status, doctorQuery.page, doctorQuery.limit);
+  }
 }

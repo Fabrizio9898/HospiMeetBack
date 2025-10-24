@@ -4,9 +4,11 @@ import { AdminController } from './admin.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { EmailModule } from '../email/email.module';
+import { Doctor } from 'src/entities/doctor.entity';
+import { DoctorsModule } from '../doctors/doctors.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User]),EmailModule],
+  imports: [TypeOrmModule.forFeature([User,Doctor]),EmailModule,DoctorsModule],
   controllers: [AdminController],
   providers: [AdminService],
 })

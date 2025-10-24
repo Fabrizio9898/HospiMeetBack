@@ -1,7 +1,8 @@
 import {
   BadRequestException,
   Injectable,
-  InternalServerErrorException
+  InternalServerErrorException,
+  UnauthorizedException
 } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { UpdateAdminDto } from './dto/update-admin.dto';
@@ -14,12 +15,18 @@ import { ApiError } from 'src/helpers/apiError.helper';
 import { ApiStatusEnum } from 'src/enums/apiStatus.enum';
 import { UserRole } from 'src/enums/roles.enum';
 import { EmailService } from '../email/email.service';
+import { LoginDto } from 'src/dtos/login.dto';
+import { generateToken } from 'src/utils/jwt.util';
+import { UserLoginResponse } from '../users/auth/dtos/loginResponse.dto';
+import { Doctor_Status } from 'src/enums/doctorStatus.enum';
+import { Doctor } from 'src/entities/doctor.entity';
 
 @Injectable()
 export class AdminService {
   constructor(
     @InjectRepository(User) private userRepository: Repository<User>,
-    private readonly mailService: EmailService // Inyectas el mailer
+    private readonly mailService: EmailService,
+    @InjectRepository(Doctor) private doctorRepository: Repository<Doctor>
   ) {}
 
   async create(createAdminDto: CreateAdminDto) {
@@ -57,6 +64,64 @@ export class AdminService {
       );
     }
     return { message: 'Administrador creado y notificado exitosamente' };
+  }
+
+  async login(data: LoginDto): Promise<UserLoginResponse> {
+    const { email, password } = data;
+
+    const user = await this.userRepository
+      .createQueryBuilder('user')
+      .where('user.email = :email', { email: email })
+      .andWhere('user.role IN (:...roles)', {
+        roles: [UserRole.ADMIN, UserRole.SUPER_ADMIN]
+      })
+      .getOne();
+
+    if (!user || !(await bcrypt.compare(password, user.password)))
+      throw new UnauthorizedException('Credenciales inválidas');
+
+    const token = await generateToken(user);
+
+    const { password: _, ...userClean } = user;
+
+    return {
+      message: ApiStatusEnum.LOGIN_SUCCESS,
+      token: token,
+      user: userClean
+    };
+  }
+
+  async getDoctors(status: Doctor_Status, page: number, limit: number) {
+    const query = this.doctorRepository
+      .createQueryBuilder('doctor')
+
+
+      query.loadRelationCountAndMap(
+      'doctor.specialtyCount', 
+      'doctor.specialities' 
+    );
+      
+
+    // 2. Preparar el filtro dinámico
+    if (status) {
+      query.where('doctor.status = :status', { status: status });
+    }
+
+    // 3. Aplicar paginación
+    query.skip((page - 1) * limit);
+    query.take(limit);
+
+    // 4. La consulta (getManyAndCount)
+    // Nota: es el equivalente a findAndCount
+    const [doctors, total] = await query.getManyAndCount();
+  
+  return {
+    data: doctors,
+    total,
+    page,
+    limit,
+    totalPages: Math.ceil(total / limit)
+  };
   }
 
   findAll() {
