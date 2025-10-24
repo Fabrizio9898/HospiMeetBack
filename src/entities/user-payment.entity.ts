@@ -2,17 +2,16 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
+  OneToOne,
+  JoinColumn
 } from 'typeorm';
 import { Appointment } from './appointment.entity';
-import { DoctorPayment } from './doctor-payment.entity';
 
 @Entity('user_payments')
 export class UserPayment {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
@@ -24,14 +23,9 @@ export class UserPayment {
   @Column({ type: 'varchar', length: 100 })
   metodoPago: string; // e.g., 'tarjeta', 'transferencia'
 
-  @ManyToOne(() => Appointment, (turno) => turno.pago, { onDelete: 'CASCADE' })
+  @OneToOne(() => Appointment) // Ya no 'ManyToOne'
+  @JoinColumn()
   turno: Appointment;
-
-  @Column()
-  turnoId: number;
-
-  @OneToMany(() => DoctorPayment, (pagoHonorario) => pagoHonorario.pago)
-  pagosHonorarios: DoctorPayment[]; // Para desembolso posterior
 
   @CreateDateColumn()
   createdAt: Date;

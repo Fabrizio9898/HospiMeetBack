@@ -7,40 +7,28 @@ import {
   UpdateDateColumn
 } from 'typeorm';
 import { Doctor } from './doctor.entity';
-import { UserPayment } from './user-payment.entity';
+import { DoctorPaymentStatus } from 'src/enums/doctorPaymentStatus.enum';
 
 @Entity('doctor_payments')
 export class DoctorPayment {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  montoBruto: number; // Monto total del pago de la cita
-
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0.1 }) // Comisión % (10% ejemplo)
-  comisionPorcentaje: number;
-
-  @Column({ type: 'decimal', precision: 10, scale: 2 }) // Calculado: montoBruto * (1 - comision)
   montoNeto: number;
 
-  @Column({ type: 'varchar', length: 50, default: 'pendiente' }) // 'pendiente', 'enviado'
-  estado: string;
+  @Column({
+    type: 'enum',
+    enum: DoctorPaymentStatus,
+    default: DoctorPaymentStatus.PROCESSING
+  })
+  status: DoctorPaymentStatus;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.pagosHonorarios, {
     onDelete: 'CASCADE'
   })
   doctor: Doctor;
 
-  @Column()
-  doctorId: number;
-
-  @ManyToOne(() => UserPayment, (pago) => pago.pagosHonorarios, {
-    onDelete: 'CASCADE'
-  })
-  pago: UserPayment;
-
-  @Column()
-  pagoId: number;
 
   @CreateDateColumn()
   createdAt: Date;

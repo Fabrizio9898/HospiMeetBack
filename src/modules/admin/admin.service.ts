@@ -154,6 +154,10 @@ export class AdminService {
     };
   }
 
+  async getDashboardKpis(){
+    
+  }
+
   findAll() {
     return `This action returns all admin`;
   }

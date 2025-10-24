@@ -63,10 +63,14 @@ export class AdminController {
   )
   @ApiBearerAuth()
   async getDoctors(@Query() doctorQuery: GetDoctorsQueryDto) {
-    // 1. Obtienes los datos "planos" del servicio
     const response = await this.adminService.getDoctors(doctorQuery);
     return plainToInstance(DoctorListResponseDto, response, {
       excludeExtraneousValues: true 
     });
+  }
+
+  @Get("dashboard/kpis")
+  findAll() {
+    return this.adminService.getDashboardKpis();
   }
 }
