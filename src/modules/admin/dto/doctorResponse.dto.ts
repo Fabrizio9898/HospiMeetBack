@@ -1,12 +1,13 @@
 import { Type } from '@nestjs/class-transformer';
 import { IsArray, IsInt, IsNotEmpty } from 'class-validator';
 import { Doctor } from 'src/entities/doctor.entity';
+import { DoctorPublicDto } from './doctorPublic.dto';
 
 export class DoctorListResponseDto {
-  @Type(() => Doctor)
+  @Type(() => DoctorPublicDto)
   @IsArray()
-  data: Doctor[];
-  
+  data: DoctorPublicDto[];
+
   @IsInt()
   @IsNotEmpty()
   total: number;

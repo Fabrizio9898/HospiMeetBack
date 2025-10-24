@@ -21,6 +21,8 @@ import { UserLoginResponse } from '../users/auth/dtos/loginResponse.dto';
 import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 import { Doctor } from 'src/entities/doctor.entity';
 import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
+import { DoctorPublicDto } from './dto/doctorPublic.dto';
+import { DoctorListResponseDto } from './dto/doctorResponse.dto';
 
 @Injectable()
 export class AdminService {
@@ -92,7 +94,9 @@ export class AdminService {
     };
   }
 
-  async getDoctors(queryDto: GetDoctorsQueryDto) {
+  async getDoctors(
+    queryDto: GetDoctorsQueryDto
+  ){
     // 1. Destructura el DTO
     const {
       status, // Será 'undefined' si no se envía

@@ -22,6 +22,8 @@ import { AuthGuard } from 'src/guards/auth.guard';
 import { LoginDto } from 'src/dtos/login.dto';
 import { UserLoginResponse } from '../users/auth/dtos/loginResponse.dto';
 import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
+import { plainToInstance } from 'class-transformer';
+import { DoctorListResponseDto } from './dto/doctorResponse.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -48,9 +50,7 @@ export class AdminController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  async getDoctorDocuments(@Param('id',ParseUUIDPipe) id: string) {
-
-  }
+  async getDoctorDocuments(@Param('id', ParseUUIDPipe) id: string) {}
 
   @Get('doctors')
   @Roles(UserRole.SUPER_ADMIN, UserRole.ADMIN)
@@ -63,8 +63,10 @@ export class AdminController {
   )
   @ApiBearerAuth()
   async getDoctors(@Query() doctorQuery: GetDoctorsQueryDto) {
-    return await this.adminService.getDoctors(
-      doctorQuery
-    );
+    // 1. Obtienes los datos "planos" del servicio
+    const response = await this.adminService.getDoctors(doctorQuery);
+    return plainToInstance(DoctorListResponseDto, response, {
+      excludeExtraneousValues: true 
+    });
   }
 }
