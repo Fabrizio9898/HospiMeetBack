@@ -7,6 +7,7 @@ import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 import { ApiError } from 'src/helpers/apiError.helper';
 import { ApiStatusEnum } from 'src/enums/apiStatus.enum';
+import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 
 
 @Injectable()
@@ -31,6 +32,7 @@ export class DoctorsService {
 
       const createdUser: Doctor = this.doctorRepository.create({
         ...restUser,
+        status:Doctor_Status.INACTIVE,
         email: lower_email,
         password: hashed_password
       });

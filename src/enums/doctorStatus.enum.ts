@@ -1,7 +1,8 @@
 export enum Doctor_Status {
-  PENDING = 'PENDING',
-  ACTIVE = 'ACTIVE',
-  SUSPENDED = 'SUSPENDED',
-  BANNED = 'BANNED',
-  REJECTED = 'REJECTED'
+  PENDING = 'pending',
+  INACTIVE="inactive",
+  ACTIVE = 'active',
+  SUSPENDED = 'suspended',
+  BANNED = 'banned',
+  REJECTED = 'rejected'
 }
