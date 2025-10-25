@@ -5,7 +5,6 @@ import {
   UnauthorizedException
 } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { Between, Brackets, Repository } from 'typeorm';
@@ -216,9 +215,6 @@ export class AdminService {
     }
   }
 
-
-
-  updateDoctorStatus(id: number, updateAdminDto: UpdateAdminDto) {}
 
   findOne(id: number) {}
 }

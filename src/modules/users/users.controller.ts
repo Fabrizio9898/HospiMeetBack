@@ -1,8 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, Put } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, Put, UseGuards, ParseUUIDPipe, BadRequestException } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-import { ApiTags } from '@nestjs/swagger';
+import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
+import { AuthGuard } from 'src/guards/auth.guard';
+import { isNotEmptyObject } from 'class-validator';
+import { ApiError } from 'src/helpers/apiError.helper';
+import { ApiStatusEnum } from 'src/enums/apiStatus.enum';
+import {UpdatePasswordDto, UpdateUserDto } from 'src/dtos/updateUser.dto';
 
 @ApiTags('Users')
 @Controller('users')
@@ -14,23 +18,37 @@ export class UsersController {
     return await this.usersService.create(createUserDto);
   }
 
-  @Get()
-  findAll() {
-    return this.usersService.findAll();
+  @Post('update/email/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  async updateEmail(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUser: UpdateUserDto
+  ) {
+    if (!isNotEmptyObject(updateUser)) {
+      throw new ApiError(
+        ApiStatusEnum.USER_UPDATE_FAILED,
+        BadRequestException,
+        'body values are empty'
+      );
+    }
+    return this.usersService.updateEmail(id, updateUser);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(id);
-  }
-
-  @Put(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-    return this.usersService.update(+id, updateUserDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  @Post('update/email/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  async updatePassword(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateUser: UpdatePasswordDto
+  ) {
+    if (!isNotEmptyObject(updateUser)) {
+      throw new ApiError(
+        ApiStatusEnum.USER_UPDATE_FAILED,
+        BadRequestException,
+        'body values are empty'
+      );
+    }
+    return this.usersService.updatePassword(id, updateUser);
   }
 }

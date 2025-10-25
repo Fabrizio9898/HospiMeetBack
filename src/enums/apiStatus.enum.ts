@@ -19,15 +19,24 @@ export enum ApiStatusEnum {
   PASSWORD_UPDATE_FAILED = 'Error al actualizar la contraseña',
   HASHING_FAILED = 'Encriptado de contraseña fallido!',
   PASSWORD_SAME_AS_OLD = 'La nueva contraseña no puede ser igual a la anterior',
+  PASSWORDS_DONT_MATCH = 'Las contraseñas no coinciden',
 
+  // Users
+  USER_DELETED = 'Este usuario fue eliminado!',
+  USER_DELETION_FAILED = 'No se pudo eliminar este usuario',
+  USER_RESTORED = 'Usuario restaurado correctamente',
+  USER_NOT_FOUND = 'Usuario no encontrado',
+  USER_UPDATE_FAILED = 'Error al actualizar el usuario',
+  USER_LIST_EMPTY = 'La lista de usuarios está vacia',
+  USER_UNBAN_OR_BAN = 'No se pudo actualizar el estado baneado de este usuario',
+  USER_RANKUP_FAILED = 'No se pudo actualizar el rango de este usuario',
+  USER_HAS_RESERVATIONS = 'Usuario tiene reservas activas',
+  EMAIL_ALREADY_IN_USE = 'Email already in use',
 
   // Reservations
   RESERVATION_CREATED = 'Reservacion agendada exitosamente',
   RESERVATION_NOT_FOUND = 'No se encontró ninguna reserva',
   RESERVATION_ALREADY_CANCELED = 'Esta reserva ya fue cancelada',
- 
-
-  
 
   // Payments
   SUBSCRIPTION_PAYMENT_FAILED = 'No se pudo crear el pago de la subscripcion',
@@ -49,15 +58,13 @@ export enum ApiStatusEnum {
   IMAGE_DELETION_SUCCESS = 'Imagen eliminada correctamente',
   MAX_IMAGES_REACHED = 'Maximo de imagenes alcanzado, elimina una imagen antes de subir otra!',
 
-
   // General
- 
+
   RANKING_UP_SUCCESS = 'El rol de este usuario ha cambiado',
   UNKNOWN_ERROR = 'Algo salió mal',
   RESOURCE_NOT_FOUND = 'Recurso no encontrado',
   UNAUTHORIZED = 'Acceso denegado',
   NOTHING_UPDATED = 'No se ha hecho ninguna actualizacion',
   INSUFFICIENT_PERMISSIONS = 'No tienes permisos para hacer eso',
-  NOT_ALLOWED_HERE = 'No estás permitido aqui!',
-
+  NOT_ALLOWED_HERE = 'No estás permitido aqui!'
 }

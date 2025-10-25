@@ -10,11 +10,11 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
-  ParseUUIDPipe
+  ParseUUIDPipe,
+  BadRequestException
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
-import { UpdateAdminDto } from './dto/update-admin.dto';
 import { Roles } from 'src/decorators/roles.decorator';
 import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 import { UserRole } from 'src/enums/roles.enum';
@@ -24,6 +24,10 @@ import { UserLoginResponse } from '../users/auth/dtos/loginResponse.dto';
 import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
 import { plainToInstance } from 'class-transformer';
 import { DoctorListResponseDto } from './dto/doctorResponse.dto';
+import { isNotEmptyObject } from 'class-validator';
+import { ApiError } from 'src/helpers/apiError.helper';
+import { ApiStatusEnum } from 'src/enums/apiStatus.enum';
+import { UpdateUserDto } from '../../dtos/updateUser.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -74,4 +78,6 @@ export class AdminController {
   async getKpis() {
     return await this.adminService.getDashboardKpis();
   }
+
+ 
 }
