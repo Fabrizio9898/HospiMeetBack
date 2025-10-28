@@ -48,6 +48,8 @@ export class DoctorsService {
     }
   }
 
+  
+
    async getByEmail(email: string): Promise<Doctor | undefined> {
       const found: Doctor | null = await this.doctorRepository.findOne({
         where: { email: email }
@@ -55,19 +57,9 @@ export class DoctorsService {
       return found || undefined;
     }
 
-  findAll() {
-    return `This action returns all doctors`;
-  }
-
-  findOne(id: number) {
-    return `This action returns a #${id} doctor`;
-  }
 
   update(id: number, updateDoctorDto: UpdateDoctorDto) {
     return `This action updates a #${id} doctor`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} doctor`;
-  }
 }

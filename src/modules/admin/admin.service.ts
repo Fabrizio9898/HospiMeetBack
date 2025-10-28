@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Injectable,
   InternalServerErrorException,
+  NotFoundException,
   UnauthorizedException
 } from '@nestjs/common';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -215,6 +216,74 @@ export class AdminService {
     }
   }
 
+  async updateDoctorStatus(id: string,newStatus: Doctor_Status) {
+    try {
+      // 1. Buscar al doctor
+      const doctor = await this.doctorRepository.findOneBy({ id });
 
-  findOne(id: number) {}
+      if (!doctor) {
+        throw new NotFoundException(`Doctor con ID ${id} no encontrado.`);
+      }
+
+
+      if (doctor.status === newStatus) {
+        throw new BadRequestException(
+          `El doctor ya se encuentra en estado: ${newStatus}`
+        );
+      }
+
+      // // 3. Lógica específica al aprobar/rechazar
+      // if (newStatus === Doctor_Status.ACTIVE) {
+      //   // (Aquí podrías enviar un email de bienvenida)
+      //   // await this.mailService.sendDoctorWelcomeEmail(doctor.email);
+      // }
+
+      // if (newStatus === Doctor_Status.REJECTED) {
+      //   // (Aquí podrías enviar un email de rechazo)
+      // }
+
+      // 4. Actualizar y guardar
+      doctor.status = newStatus;
+      await this.doctorRepository.save(doctor);
+
+      return {
+        message: `Estado del doctor actualizado a: ${newStatus}`,};
+    } catch (error) {
+      // Re-lanzar errores que ya controlamos (404, 400)
+      if (
+        error instanceof NotFoundException ||
+        error instanceof BadRequestException
+      ) {
+        throw error;
+      }
+      // Capturar cualquier otro error (ej. Falla de BD)
+      console.error('Error al actualizar estado del doctor:', error);
+      throw new InternalServerErrorException('Error al actualizar el estado.');
+    }
+  }
+
+  async getDoctorProfile(id: string) {
+    try {
+      const doctor = await this.doctorRepository
+        .createQueryBuilder('doctor')
+        .leftJoinAndSelect('doctor.documents', 'documents')
+        .where('doctor.id = :id', { id })
+        .getOne();
+
+      if (!doctor) {
+        throw new ApiError(ApiStatusEnum.USER_NOT_FOUND,NotFoundException);
+      }
+
+      // (Aquí iría la lógica para generar URLs firmadas
+      // de Cloudinary/S3 para los 'doctor.documents' privados)
+
+      return doctor;
+
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        throw error;
+      }
+      throw new InternalServerErrorException('Error al obtener el perfil del doctor.');
+    }
+  }
 }

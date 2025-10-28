@@ -35,7 +35,7 @@ export class UsersController {
     return this.usersService.updateEmail(id, updateUser);
   }
 
-  @Post('update/email/:id')
+  @Post('update/password/:id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   async updatePassword(

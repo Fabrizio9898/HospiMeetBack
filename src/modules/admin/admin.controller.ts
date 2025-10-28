@@ -28,6 +28,7 @@ import { isNotEmptyObject } from 'class-validator';
 import { ApiError } from 'src/helpers/apiError.helper';
 import { ApiStatusEnum } from 'src/enums/apiStatus.enum';
 import { UpdateUserDto } from '../../dtos/updateUser.dto';
+import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -49,12 +50,6 @@ export class AdminController {
   async login(@Body() data: LoginDto): Promise<UserLoginResponse> {
     return await this.adminService.login(data);
   }
-
-  @Get('doctor-documents/:id')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  async getDoctorDocuments(@Param('id', ParseUUIDPipe) id: string) {}
 
   @Get('doctors')
   @UseGuards(AuthGuard)
@@ -79,5 +74,19 @@ export class AdminController {
     return await this.adminService.getDashboardKpis();
   }
 
- 
+  @Get('doctor-profile/:id')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  async getDoctorProfile(@Param('id', ParseUUIDPipe) id: string) {
+    
+  }
+
+  @Patch('doctors/:id/status')
+  async updateDoctorStatus(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateStatusDto: UpdateDoctorStatusDto
+  ) {
+    return this.adminService.updateDoctorStatus(id, updateStatusDto.status);
+  }
 }

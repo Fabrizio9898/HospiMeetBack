@@ -31,7 +31,7 @@ export class UpdatePasswordDto {
     message:
       'Password must contain at least one uppercase letter and one number.'
   })
-  password: string;
+  newPassword: string;
 
   @ApiProperty({
     example: 'Password!1'
