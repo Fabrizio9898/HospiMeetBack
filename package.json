@@ -26,6 +26,7 @@
     "migration:show": "npm run typeorm -- -d ./src/config/db.config.ts migration:show"
   },
   "dependencies": {
+    "@aws-sdk/client-s3": "^3.919.0",
     "@nestjs-modules/mailer": "^2.0.2",
     "@nestjs/class-transformer": "^0.4.0",
     "@nestjs/common": "^11.0.1",
@@ -59,6 +60,7 @@
     "@types/bcrypt": "^6.0.0",
     "@types/express": "^5.0.0",
     "@types/jest": "^30.0.0",
+    "@types/multer": "^2.0.0",
     "@types/node": "^22.10.7",
     "@types/nodemailer": "^7.0.2",
     "@types/supertest": "^6.0.2",

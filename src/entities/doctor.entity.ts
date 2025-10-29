@@ -28,7 +28,7 @@ export class Doctor {
       'https://res.cloudinary.com/dvgvcleky/image/upload/f_auto,q_auto/v1/RestO/ffgx6ywlaix0mb3jghux'
   })
   profile_image: string;
-  
+
   @Column({ type: 'varchar', length: 100, unique: true })
   email: string;
 
@@ -59,6 +59,9 @@ export class Doctor {
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.DOCTOR })
   role: UserRole;
+
+  @Column({ type: 'text',  nullable: true })
+  RejectedReason?: string;
 
   @OneToMany(() => DoctorDocument, (doc) => doc.doctor, { cascade: true })
   documents: DoctorDocument[];
