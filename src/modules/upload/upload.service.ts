@@ -5,7 +5,7 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import path from 'path';
 import { randomUUID } from 'crypto';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -14,6 +14,7 @@ import { DoctorDocument } from 'src/entities/doctor-documentation.entity';
 import { DataSource, In, Repository } from 'typeorm';
 import { DoctorDocumentType } from 'src/enums/doctorDocument.enum';
 import { Doctor_Status } from 'src/enums/doctorStatus.enum';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 type VerificationFiles = {
   dni_front?: Express.Multer.File[];
   dni_back?: Express.Multer.File[];
@@ -52,7 +53,8 @@ export class UploadService {
   }
 
   async uploadDocuments(userId: string, files: VerificationFiles) {
-    const { fileFrente, fileDorso, fileLicencia } = this.validateFiles(files);
+    const { fileFrente, fileDorso, fileLicencia } =
+      this.validateDoctorDocuments(files);
 
     // --- 2. SUBIDA A S3 (EN PARALELO) ---
     const s3PathPrefix = `doctors/${userId}/verification`;
@@ -66,7 +68,7 @@ export class UploadService {
 
       // --- 3. GUARDADO EN BD ---
       // (Llamamos a tu método placeholder)
-      await this.guardarEnDB(
+      await this.saveDoctorDocuments(
         userId,
         urlDniFront,
         urlDniback,
@@ -88,7 +90,7 @@ export class UploadService {
     }
   }
 
-  async guardarEnDB(
+  async saveDoctorDocuments(
     userId: string,
     urlFrente: string,
     urlDorso: string,
@@ -144,7 +146,7 @@ export class UploadService {
 
       // 6. Actualizar el estado del Doctor (DENTRO de la transacción)
       doctor.status = Doctor_Status.PENDING;
-      doctor.RejectedReason = null; 
+      doctor.rejectedReason = null;
       const updatedDoctor = await queryRunner.manager.save(doctor);
 
       // 7. Si todo salió bien, confirmar la transacción
@@ -161,6 +163,30 @@ export class UploadService {
     } finally {
       // 9. Siempre liberar el queryRunner
       await queryRunner.release();
+    }
+  }
+
+  async generateSignedUrl(documentUrl: string): Promise<string> {
+    try {
+      const urlObject = new URL(documentUrl);
+      const s3Key = urlObject.pathname.substring(1); 
+
+      const command = new GetObjectCommand({
+        Bucket: this.bucketName,
+        Key: s3Key
+      });
+
+      // Genera una URL temporal (dura 1 hora = 3600 segundos)
+      const signedUrl = await getSignedUrl(this.s3service, command, {
+        expiresIn: 3600
+      });
+
+      return signedUrl;
+    } catch (error) {
+      console.error('Error al generar URL firmada:', error);
+      throw new InternalServerErrorException(
+        'No se pudo generar la URL del documento.'
+      );
     }
   }
 
@@ -191,7 +217,7 @@ export class UploadService {
     return publicUrl;
   }
 
-  private validateFiles(files: VerificationFiles) {
+  private validateDoctorDocuments(files: VerificationFiles) {
     const fileFrente = files.dni_front?.[0];
     const fileDorso = files.dni_back?.[0];
     const fileLicencia = files.medical_licence?.[0];

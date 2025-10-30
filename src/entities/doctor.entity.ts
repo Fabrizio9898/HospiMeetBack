@@ -61,7 +61,7 @@ export class Doctor {
   role: UserRole;
 
   @Column({ type: 'text',  nullable: true })
-  RejectedReason?: string;
+  rejectedReason?: string;
 
   @OneToMany(() => DoctorDocument, (doc) => doc.doctor, { cascade: true })
   documents: DoctorDocument[];

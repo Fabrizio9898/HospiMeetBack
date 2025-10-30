@@ -22,6 +22,8 @@ import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 import { Doctor } from 'src/entities/doctor.entity';
 import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
 import { Appointment } from 'src/entities/appointment.entity';
+import { UploadService } from '../upload/upload.service';
+import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
 
 @Injectable()
 export class AdminService {
@@ -30,7 +32,8 @@ export class AdminService {
     private readonly mailService: EmailService,
     @InjectRepository(Doctor) private doctorRepository: Repository<Doctor>,
     @InjectRepository(Appointment)
-    private appointmentRepository: Repository<Appointment>
+    private appointmentRepository: Repository<Appointment>,
+    private readonly uploadService: UploadService
   ) {}
 
   async create(createAdminDto: CreateAdminDto) {
@@ -216,7 +219,8 @@ export class AdminService {
     }
   }
 
-  async updateDoctorStatus(id: string,newStatus: Doctor_Status) {
+  async rejectOrApproveDoctors(id: string, updateDto: UpdateDoctorStatusDto) {
+    const { status: newStatus, rejectionReason } = updateDto;
     try {
       // 1. Buscar al doctor
       const doctor = await this.doctorRepository.findOneBy({ id });
@@ -225,38 +229,36 @@ export class AdminService {
         throw new NotFoundException(`Doctor con ID ${id} no encontrado.`);
       }
 
-
       if (doctor.status === newStatus) {
         throw new BadRequestException(
           `El doctor ya se encuentra en estado: ${newStatus}`
         );
       }
 
-      // // 3. Lógica específica al aprobar/rechazar
-      // if (newStatus === Doctor_Status.ACTIVE) {
-      //   // (Aquí podrías enviar un email de bienvenida)
-      //   // await this.mailService.sendDoctorWelcomeEmail(doctor.email);
-      // }
-
-      // if (newStatus === Doctor_Status.REJECTED) {
-      //   // (Aquí podrías enviar un email de rechazo)
-      // }
-
+      if (newStatus === Doctor_Status.REJECTED) {
+        if (!rejectionReason || rejectionReason.trim() === '') {
+          throw new BadRequestException(
+            'Se requiere un motivo para rechazar al doctor.'
+          );
+        }
+        doctor.rejectedReason = rejectionReason.trim();
+      } else if (newStatus === Doctor_Status.ACTIVE) {
+        doctor.rejectedReason = null;
+      }
       // 4. Actualizar y guardar
       doctor.status = newStatus;
       await this.doctorRepository.save(doctor);
 
       return {
-        message: `Estado del doctor actualizado a: ${newStatus}`,};
+        message: `Estado del doctor actualizado a: ${newStatus}`
+      };
     } catch (error) {
-      // Re-lanzar errores que ya controlamos (404, 400)
       if (
         error instanceof NotFoundException ||
         error instanceof BadRequestException
       ) {
         throw error;
       }
-      // Capturar cualquier otro error (ej. Falla de BD)
       console.error('Error al actualizar estado del doctor:', error);
       throw new InternalServerErrorException('Error al actualizar el estado.');
     }
@@ -271,19 +273,27 @@ export class AdminService {
         .getOne();
 
       if (!doctor) {
-        throw new ApiError(ApiStatusEnum.USER_NOT_FOUND,NotFoundException);
+        throw new ApiError(ApiStatusEnum.USER_NOT_FOUND, NotFoundException);
       }
 
-      // (Aquí iría la lógica para generar URLs firmadas
-      // de Cloudinary/S3 para los 'doctor.documents' privados)
+      const signedUrlPromises = doctor.documents.map(async (doc) => {
+        const signedUrl = await this.uploadService.generateSignedUrl(doc.url);
+        return {
+          ...doc,
+          url: signedUrl
+        };
+      });
 
-      return doctor;
-
+      const documentsWithSignedUrls = await Promise.all(signedUrlPromises);
+      return {
+        ...doctor,
+        documents: documentsWithSignedUrls
+      };
     } catch (error) {
-      if (error instanceof NotFoundException) {
-        throw error;
-      }
-      throw new InternalServerErrorException('Error al obtener el perfil del doctor.');
+      console.error('Error al generar URLs firmadas:', error);
+      throw new InternalServerErrorException(
+        'Error al obtener el perfil del doctor.'
+      );
     }
   }
 }

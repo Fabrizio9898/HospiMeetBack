@@ -79,7 +79,7 @@ export class AdminController {
   @UseGuards(AuthGuard)
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   async getDoctorProfile(@Param('id', ParseUUIDPipe) id: string) {
-    
+    return await this.adminService.getDoctorProfile(id);
   }
 
   @Patch('doctors/:id/status')
@@ -87,6 +87,6 @@ export class AdminController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateStatusDto: UpdateDoctorStatusDto
   ) {
-    return this.adminService.updateDoctorStatus(id, updateStatusDto.status);
+    return await this.adminService.rejectOrApproveDoctors(id, updateStatusDto);
   }
 }

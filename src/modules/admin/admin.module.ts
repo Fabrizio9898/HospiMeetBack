@@ -7,9 +7,10 @@ import { EmailModule } from '../email/email.module';
 import { Doctor } from 'src/entities/doctor.entity';
 import { DoctorsModule } from '../doctors/doctors.module';
 import { Appointment } from 'src/entities/appointment.entity';
+import { UploadModule } from '../upload/upload.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([User,Doctor,Appointment]),EmailModule,DoctorsModule],
+  imports: [TypeOrmModule.forFeature([User,Doctor,Appointment]),EmailModule,DoctorsModule,UploadModule],
   controllers: [AdminController],
   providers: [AdminService],
 })
