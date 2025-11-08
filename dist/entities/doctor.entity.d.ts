@@ -1,0 +1,32 @@
+import { DoctorSchedule } from './doctor-schedules.entity';
+import { Appointment } from './appointment.entity';
+import { Review } from './review.entity';
+import { DoctorPayment } from './doctor-payment.entity';
+import { DoctorSpeciality } from './doctor-especiality.entity';
+import { DoctorAvailability } from './doctor-availability.entity';
+import { Doctor_Status } from 'src/enums/doctorStatus.enum';
+import { DoctorDocument } from './doctor-documentation.entity';
+import { UserRole } from 'src/enums/roles.enum';
+export declare class Doctor {
+    id: string;
+    profile_image: string;
+    email: string;
+    password: string;
+    fullname: string;
+    dni: string;
+    medicalLicenseNumber: string;
+    status: Doctor_Status;
+    phoneNumber: string;
+    tarifaPorConsulta: number;
+    role: UserRole;
+    rejectedReason?: string;
+    documents: DoctorDocument[];
+    schedules: DoctorSchedule[];
+    appointments: Appointment[];
+    reviews: Review[];
+    pagosHonorarios: DoctorPayment[];
+    disponibilidades: DoctorAvailability[];
+    specialities: DoctorSpeciality[];
+    createdAt: Date;
+    updatedAt: Date;
+}
