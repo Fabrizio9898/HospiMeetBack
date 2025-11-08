@@ -38,7 +38,7 @@ export class UploadController {
             file.fieldname === 'dni_back'
           ) {
             // Solo imágenes para el DNI
-            if (!file.mimetype.match(/\/(jpg|jpeg|png)$/)) {
+            if (!file.mimetype.match(/\/(jpg|jpeg|png|pdf)$/)) {
               return cb(
                 new Error('El DNI debe ser una imagen (JPG, JPEG, PNG).')
               );
@@ -58,5 +58,8 @@ export class UploadController {
       medical_licence?: Express.Multer.File[];
     },@Param("id",ParseUUIDPipe) id:string
   ) {
+
+    console.log('holaaa');
+    
 return await this.uploadService.uploadDocuments(id,file);  }
 }

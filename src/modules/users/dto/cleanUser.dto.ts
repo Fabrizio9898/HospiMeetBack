@@ -4,6 +4,8 @@ import { User } from 'src/entities/user.entity';
 
 export class UserClean extends OmitType(User, [
   'password',
-  'reviews',
-  'appointments'
+  "appointments",
+  "reviews",
+  "createdAt",
+  "updatedAt",
 ] as const) {}

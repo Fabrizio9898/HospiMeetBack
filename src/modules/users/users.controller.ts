@@ -13,7 +13,7 @@ import {UpdatePasswordDto, UpdateUserDto } from 'src/dtos/updateUser.dto';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  @Post()
+  @Post("register")
   async create(@Body() createUserDto: CreateUserDto) {
     return await this.usersService.create(createUserDto);
   }

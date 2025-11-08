@@ -7,6 +7,9 @@ import { DoctorsModule } from './modules/doctors/doctors.module';
 import { JwtModule } from '@nestjs/jwt';
 import { Users_AuthModule } from './modules/users/auth/auth.module';
 import { Doctors_AuthModule } from './modules/doctors/auth/auth.module';
+import { AdminModule } from './modules/admin/admin.module';
+import { UploadModule } from './modules/upload/upload.module';
+import { EmailModule } from './modules/email/email.module';
 
 @Module({
   imports: [
@@ -26,7 +29,10 @@ import { Doctors_AuthModule } from './modules/doctors/auth/auth.module';
     UsersModule,
     DoctorsModule,
     Users_AuthModule,
-    Doctors_AuthModule
+    Doctors_AuthModule,
+    AdminModule,
+    EmailModule,
+    UploadModule
   ],
 
   controllers: [],

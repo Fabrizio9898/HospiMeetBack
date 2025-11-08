@@ -8,7 +8,7 @@ export class DoctorPublicDto extends PickType(Doctor, [
   'dni',
   'phoneNumber',
   'status',
-  'specialities'
+  "tarifaPorConsulta"
 ] as const) {
   @ApiProperty({
     example: 3,

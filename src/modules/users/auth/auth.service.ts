@@ -15,20 +15,15 @@ import { generateToken } from 'src/utils/jwt.util';
 export class AuthService {
   constructor(
     private readonly userService: UsersService
-    // private readonly mailService: MailerService
   ) {}
 
   async checkEmail(checkEmailDto: CheckEmailDto): Promise<{ exists: boolean }> {
     const { email } = checkEmailDto;
     const user = await this.userService.getUserByMail(email.toLowerCase());
-
-    // Responde si existe o no
     return { exists: !!user };
   }
 
-  /**
-   * PASO 2 (Opción A): Si el email SÍ existe, el frontend llama a esta.
-   */
+  
   async login(loginDto: LoginDto): Promise<UserLoginResponse> {
     const { email, password } = loginDto;
 

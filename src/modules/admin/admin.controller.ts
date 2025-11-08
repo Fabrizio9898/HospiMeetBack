@@ -24,10 +24,6 @@ import { UserLoginResponse } from '../users/auth/dtos/loginResponse.dto';
 import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
 import { plainToInstance } from 'class-transformer';
 import { DoctorListResponseDto } from './dto/doctorResponse.dto';
-import { isNotEmptyObject } from 'class-validator';
-import { ApiError } from 'src/helpers/apiError.helper';
-import { ApiStatusEnum } from 'src/enums/apiStatus.enum';
-import { UpdateUserDto } from '../../dtos/updateUser.dto';
 import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
 
 @Controller('admin')
@@ -62,9 +58,7 @@ export class AdminController {
   @ApiBearerAuth()
   async getDoctors(@Query() doctorQuery: GetDoctorsQueryDto) {
     const response = await this.adminService.getDoctors(doctorQuery);
-    return plainToInstance(DoctorListResponseDto, response, {
-      excludeExtraneousValues: true
-    });
+    return plainToInstance(DoctorListResponseDto, response);
   }
 
   @Get('dashboard/kpis')
@@ -74,16 +68,24 @@ export class AdminController {
     return await this.adminService.getDashboardKpis();
   }
 
-  @Get('doctor-profile/:id')
+  @Get('doctor-documents/:id')
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  async getDoctorProfile(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.adminService.getDoctorProfile(id);
+  async getDoctorDocuments(@Param('id', ParseUUIDPipe) id: string) {
+    return await this.adminService.getDoctorDocuments(id);
   }
 
   @Patch('doctors/:id/status')
   async updateDoctorStatus(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() updateStatusDto: UpdateDoctorStatusDto
+  ) {
+    return await this.adminService.rejectOrApproveDoctors(id, updateStatusDto);
+  }
+
+  @Patch('doctors/:id/status')
+  async verifyDocument(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateStatusDto: UpdateDoctorStatusDto
   ) {

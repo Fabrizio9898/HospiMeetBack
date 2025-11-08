@@ -8,7 +8,6 @@ import { ConfigService } from '@nestjs/config';
 import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
 import path from 'path';
 import { randomUUID } from 'crypto';
-import { InjectRepository } from '@nestjs/typeorm';
 import { Doctor } from 'src/entities/doctor.entity';
 import { DoctorDocument } from 'src/entities/doctor-documentation.entity';
 import { DataSource, In, Repository } from 'typeorm';
@@ -30,10 +29,6 @@ export class UploadService {
   constructor(
     private readonly configService: ConfigService,
     private readonly dataSource: DataSource,
-    @InjectRepository(Doctor)
-    private readonly doctorRepository: Repository<Doctor>,
-    @InjectRepository(DoctorDocument)
-    private readonly documentRepository: Repository<DoctorDocument>
   ) {
     this.region = this.configService.getOrThrow<string>('AWS_S3_REGION');
     this.bucketName =
@@ -227,11 +222,11 @@ export class UploadService {
         'Faltan archivos (se requieren frente, dorso y licencia).'
       );
     }
-    if (!fileFrente.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-      throw new BadRequestException('El DNI Frente debe ser una imagen.');
+    if (!fileFrente.mimetype.match(/\/(jpg|jpeg|png|pdf)$/)) {
+      throw new BadRequestException('El DNI Frente debe ser una imagen o pdf.');
     }
-    if (!fileDorso.mimetype.match(/\/(jpg|jpeg|png)$/)) {
-      throw new BadRequestException('El DNI Dorso debe ser una imagen.');
+    if (!fileDorso.mimetype.match(/\/(jpg|jpeg|png|pdf)$/)) {
+      throw new BadRequestException('El DNI Dorso debe ser una imagen o pdf.');
     }
     if (!fileLicencia.mimetype.match(/\/(pdf)$/)) {
       throw new BadRequestException('La licencia médica debe ser un PDF.');

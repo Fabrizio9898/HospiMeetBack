@@ -7,7 +7,7 @@ import { UpdateDoctorDto } from './dto/update-doctor.dto';
 export class DoctorsController {
   constructor(private readonly doctorsService: DoctorsService) {}
 
-  @Post()
+  @Post("register")
   async create(@Body() createDoctorDto: CreateDoctorDto) {
     return await this.doctorsService.create(createDoctorDto);
   }

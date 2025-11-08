@@ -24,6 +24,8 @@ import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
 import { Appointment } from 'src/entities/appointment.entity';
 import { UploadService } from '../upload/upload.service';
 import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
+import { log } from 'console';
+import { AppointmentStatus } from 'src/enums/appointment.enum';
 
 @Injectable()
 export class AdminService {
@@ -37,46 +39,50 @@ export class AdminService {
   ) {}
 
   async create(createAdminDto: CreateAdminDto) {
+    const { name, email } = createAdminDto;
+
+    const existingUser = await this.userRepository.findOne({
+      where: { email }
+    });
+    if (existingUser) {
+      throw new BadRequestException('El email ya está en uso');
+    }
+
+    let tempPassword = generator.generate({
+      length: 10,
+      numbers: true
+    });
+
+    const hashed_password = await bcrypt.hash(tempPassword, 10);
+    if (!hashed_password) {
+      throw new ApiError(ApiStatusEnum.HASHING_FAILED, BadRequestException);
+    }
+    const newAdmin = this.userRepository.create({
+      name,
+      email,
+      password: hashed_password,
+      role: UserRole.ADMIN
+    });
+
+    await this.userRepository.save(newAdmin);
+
     try {
-      const { name, email } = createAdminDto;
-
-      // 1. Verificar que el email no exista
-      const existingUser = await this.userRepository.findOne({
-        where: { email }
-      });
-      if (existingUser)
-        throw new BadRequestException('El email ya está en uso');
-
-      let tempPassword = generator.generate({
-        length: 10,
-        numbers: true
-      });
-
-      const hashed_password = await bcrypt.hash(tempPassword, 10);
-      if (!hashed_password) {
-        throw new ApiError(ApiStatusEnum.HASHING_FAILED, BadRequestException);
-      }
-      const newAdmin = this.userRepository.create({
-        name,
-        email,
-        password: hashed_password,
-        role: UserRole.ADMIN
-      });
-
-      await this.userRepository.save(newAdmin);
       await this.mailService.sendAdminWelcomeEmail(email, name, tempPassword);
+      // Si todo sale bien (usuario creado + email enviado)
+      return { message: 'Administrador creado y notificado exitosamente' };
     } catch (error) {
+      // Si SOLO el email falla
       console.error('Error al enviar email de bienvenida:', error);
       throw new InternalServerErrorException(
         'Admin creado, pero falló el envío del email.'
       );
     }
-    return { message: 'Administrador creado y notificado exitosamente' };
   }
 
   async login(data: LoginDto): Promise<UserLoginResponse> {
     try {
       const { email, password } = data;
+      console.log(data);
 
       const user = await this.userRepository
         .createQueryBuilder('user')
@@ -86,8 +92,9 @@ export class AdminService {
         })
         .getOne();
 
-      if (!user || !(await bcrypt.compare(password, user.password)))
+      if (!user || !(await bcrypt.compare(password, user.password))) {
         throw new UnauthorizedException('Credenciales inválidas');
+      }
 
       const token = await generateToken(user);
 
@@ -147,6 +154,10 @@ export class AdminService {
     query.take(limit);
 
     const [doctors, total] = await query.getManyAndCount();
+console.log(doctors);
+if(doctors.length>0){
+  console.log(typeof(doctors[0].tarifaPorConsulta))
+}
 
     return {
       data: doctors,
@@ -161,11 +172,12 @@ export class AdminService {
     const now = new Date();
     const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-
+    console.log('holaaaaaa');
     try {
       const countPendingDoctors = this.doctorRepository.count({
         where: { status: Doctor_Status.PENDING }
       });
+      console.log(countPendingDoctors);
 
       const countNewDoctorsMonth = this.doctorRepository.count({
         where: {
@@ -175,12 +187,13 @@ export class AdminService {
       });
 
       const sumRevenueMonth = this.appointmentRepository.sum('cost', {
-        status: 'COMPLETED',
+        status: AppointmentStatus.COMPLETED,
         createdAt: Between(startDate, endDate)
       });
+
       const countAppointmentsMonth = this.appointmentRepository.count({
         where: {
-          status: 'COMPLETED',
+          status: AppointmentStatus.COMPLETED,
           createdAt: Between(startDate, endDate)
         }
       });
@@ -243,6 +256,9 @@ export class AdminService {
         }
         doctor.rejectedReason = rejectionReason.trim();
       } else if (newStatus === Doctor_Status.ACTIVE) {
+//chequear si sus docuemntos fueron verificados
+
+
         doctor.rejectedReason = null;
       }
       // 4. Actualizar y guardar
@@ -264,12 +280,20 @@ export class AdminService {
     }
   }
 
-  async getDoctorProfile(id: string) {
+  async getDoctorDocuments(id: string) {
     try {
       const doctor = await this.doctorRepository
         .createQueryBuilder('doctor')
         .leftJoinAndSelect('doctor.documents', 'documents')
+        .leftJoin('doctor.specialities', 'specialities')
         .where('doctor.id = :id', { id })
+        .select([
+          'doctor', 
+          'documents',
+          'specialities.id',
+          'specialities.name',
+          'specialities.description'
+        ])
         .getOne();
 
       if (!doctor) {
