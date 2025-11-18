@@ -26,12 +26,12 @@ export class EmailService {
    */
   async sendAdminWelcomeEmail(
     email: string,
-    name: string,
+    fullname: string,
     tempPassword: string
   ) {
     const subject = '¡Bienvenido a Tu App!';
     const html = `
-      <h1>¡Hola, ${name}!</h1>
+      <h1>¡Hola, ${fullname}!</h1>
       <p>Has sido invitado como Administrador.</p>
       <p>Tus credenciales:</p>
       <ul>

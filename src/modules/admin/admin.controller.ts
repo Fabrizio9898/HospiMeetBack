@@ -25,6 +25,7 @@ import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
 import { plainToInstance } from 'class-transformer';
 import { DoctorListResponseDto } from './dto/doctorResponse.dto';
 import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
+import { GetTicketsQueryDto } from './dto/getTicketsQuery.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -49,6 +50,7 @@ export class AdminController {
 
   @Get('doctors')
   @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @UsePipes(
     new ValidationPipe({
       transform: true,
@@ -77,6 +79,9 @@ export class AdminController {
   }
 
   @Patch('doctors/:id/status')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
   async updateDoctorStatus(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateStatusDto: UpdateDoctorStatusDto
@@ -84,11 +89,19 @@ export class AdminController {
     return await this.adminService.rejectOrApproveDoctors(id, updateStatusDto);
   }
 
-  @Patch('doctors/:id/status')
+  @Patch('doctors/:id/verify-document')
   async verifyDocument(
     @Param('id', ParseUUIDPipe) id: string,
     @Body() updateStatusDto: UpdateDoctorStatusDto
   ) {
     return await this.adminService.rejectOrApproveDoctors(id, updateStatusDto);
+  }
+
+  @Get('tickets')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  async getTickets(@Query() query: GetTicketsQueryDto) {
+    return await this.adminService.getTickets(query);
   }
 }

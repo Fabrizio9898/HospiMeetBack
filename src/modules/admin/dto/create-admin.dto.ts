@@ -11,7 +11,7 @@ export class CreateAdminDto {
       @Matches(/^[a-zA-Z\s]+$/, {
         message: 'El nombre solo puede contener letras y espacios'
       })
-      name: string;
+      fullname: string;
     
       @ApiProperty({
         example: 'TomHoward@mail.com'
