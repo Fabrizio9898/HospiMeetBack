@@ -26,6 +26,8 @@ import { UploadService } from '../upload/upload.service';
 import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
 import { log } from 'console';
 import { AppointmentStatus } from 'src/enums/appointment.enum';
+import { SupportTicket } from 'src/entities/supportTickets.entity';
+import { GetTicketsQueryDto } from './dto/getTicketsQuery.dto';
 
 @Injectable()
 export class AdminService {
@@ -35,11 +37,13 @@ export class AdminService {
     @InjectRepository(Doctor) private doctorRepository: Repository<Doctor>,
     @InjectRepository(Appointment)
     private appointmentRepository: Repository<Appointment>,
+    @InjectRepository(SupportTicket)
+    private readonly ticketRepo: Repository<SupportTicket>,
     private readonly uploadService: UploadService
   ) {}
 
   async create(createAdminDto: CreateAdminDto) {
-    const { name, email } = createAdminDto;
+    const { fullname, email } = createAdminDto;
 
     const existingUser = await this.userRepository.findOne({
       where: { email }
@@ -58,7 +62,7 @@ export class AdminService {
       throw new ApiError(ApiStatusEnum.HASHING_FAILED, BadRequestException);
     }
     const newAdmin = this.userRepository.create({
-      name,
+      fullname,
       email,
       password: hashed_password,
       role: UserRole.ADMIN
@@ -67,7 +71,11 @@ export class AdminService {
     await this.userRepository.save(newAdmin);
 
     try {
-      await this.mailService.sendAdminWelcomeEmail(email, name, tempPassword);
+      await this.mailService.sendAdminWelcomeEmail(
+        email,
+        fullname,
+        tempPassword
+      );
       // Si todo sale bien (usuario creado + email enviado)
       return { message: 'Administrador creado y notificado exitosamente' };
     } catch (error) {
@@ -154,10 +162,10 @@ export class AdminService {
     query.take(limit);
 
     const [doctors, total] = await query.getManyAndCount();
-console.log(doctors);
-if(doctors.length>0){
-  console.log(typeof(doctors[0].tarifaPorConsulta))
-}
+    console.log(doctors);
+    if (doctors.length > 0) {
+      console.log(typeof doctors[0].tarifaPorConsulta);
+    }
 
     return {
       data: doctors,
@@ -172,7 +180,6 @@ if(doctors.length>0){
     const now = new Date();
     const startDate = new Date(now.getFullYear(), now.getMonth(), 1);
     const endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0);
-    console.log('holaaaaaa');
     try {
       const countPendingDoctors = this.doctorRepository.count({
         where: { status: Doctor_Status.PENDING }
@@ -256,8 +263,7 @@ if(doctors.length>0){
         }
         doctor.rejectedReason = rejectionReason.trim();
       } else if (newStatus === Doctor_Status.ACTIVE) {
-//chequear si sus docuemntos fueron verificados
-
+        //chequear si sus docuemntos fueron verificados
 
         doctor.rejectedReason = null;
       }
@@ -288,7 +294,7 @@ if(doctors.length>0){
         .leftJoin('doctor.specialities', 'specialities')
         .where('doctor.id = :id', { id })
         .select([
-          'doctor', 
+          'doctor',
           'documents',
           'specialities.id',
           'specialities.name',
@@ -319,5 +325,90 @@ if(doctors.length>0){
         'Error al obtener el perfil del doctor.'
       );
     }
+  }
+
+  async getTickets(query: GetTicketsQueryDto) {
+    const { page = 1, limit = 10, status, priority, role, categories } = query;
+    const skip = (page - 1) * limit;
+
+    const qb = this.ticketRepo.createQueryBuilder('ticket');
+
+    // 1. Joins: Unimos sin seleccionar *todos* los campos por defecto.
+    qb.leftJoin('ticket.patient', 'patient')
+      .leftJoin('ticket.doctor', 'doctor')
+      .leftJoin('ticket.appointment', 'appointment')
+
+      // 2. Selección explícita (Optimizando la consulta al DB)
+      .select([
+        'ticket', 
+        'patient.id',
+        'patient.name',
+        'patient.profile_image',
+        'doctor.id',
+        'doctor.fullname',
+        'doctor.profile_image',
+        'appointment.id'
+      ]);
+
+    // Filtros dinámicos
+    if (status) {
+      qb.andWhere('ticket.status = :status', { status });
+    }
+
+    if (priority) {
+      qb.andWhere('ticket.priority = :priority', { priority });
+    }
+
+    if (categories && categories.length > 0) {
+      qb.andWhere('ticket.category IN (:...categories)', { categories });
+    }
+
+    if (role) {
+      qb.andWhere('ticket.reporterRole = :role', { role });
+    }
+
+    // Paginación
+    qb.orderBy('ticket.createdAt', 'DESC').skip(skip).take(limit);
+
+    const [tickets, total] = await qb.getManyAndCount();
+
+    // Mapeo de datos
+    const formattedTickets = tickets.map((ticket) => {
+      const isDoctor = ticket.reporterRole === UserRole.DOCTOR;
+      const userData = isDoctor ? ticket.doctor : ticket.patient;
+
+      // NOTA: Extracción del ID del appointment (ticket.appointment contiene SOLO el ID)
+      const bookingId = ticket.appointment
+        ? (ticket.appointment as any).id
+        : null;
+
+      return {
+        id: ticket.id,
+        subject: ticket.subject,
+        description: ticket.description,
+        category: ticket.category,
+        priority: ticket.priority,
+        status: ticket.status,
+        date: ticket.createdAt.toISOString(),
+        adminResponse: ticket.adminResponse,
+        bookingId: bookingId, 
+        user: {
+          id: userData?.id,
+          name: userData?.fullname,
+          role: ticket.reporterRole,
+          image: userData?.profile_image
+        }
+      };
+    });
+
+    return {
+      data: formattedTickets,
+      meta: {
+        total,
+        page,
+        lastPage: Math.ceil(total / limit),
+        limit
+      }
+    };
   }
 }
