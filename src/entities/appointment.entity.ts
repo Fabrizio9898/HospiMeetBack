@@ -6,7 +6,8 @@ import {
   OneToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  JoinColumn
+  JoinColumn,
+  OneToMany
 } from 'typeorm';
 import { User } from './user.entity';
 import { Doctor } from './doctor.entity';
@@ -14,6 +15,7 @@ import { UserPayment } from './user-payment.entity';
 import { DoctorSchedule } from './doctor-schedules.entity';
 import { AppointmentStatus } from 'src/enums/appointment.enum';
 import { PayoutStatus } from 'src/enums/payoutStatus.enum';
+import { SupportTicket } from './supportTickets.entity';
 
 @Entity('apointments')
 export class Appointment {
@@ -45,6 +47,9 @@ export class Appointment {
     onDelete: 'CASCADE'
   })
   doctor: Doctor;
+
+  @OneToMany(() => SupportTicket, (ticket) => ticket.appointment)
+  supportTickets: SupportTicket[];
 
   @OneToOne(() => DoctorSchedule, (schedule) => schedule.appointment, {
     onDelete: 'CASCADE'

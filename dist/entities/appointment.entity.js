@@ -17,6 +17,7 @@ const user_payment_entity_1 = require("./user-payment.entity");
 const doctor_schedules_entity_1 = require("./doctor-schedules.entity");
 const appointment_enum_1 = require("../enums/appointment.enum");
 const payoutStatus_enum_1 = require("../enums/payoutStatus.enum");
+const supportTickets_entity_1 = require("./supportTickets.entity");
 let Appointment = class Appointment {
     id;
     dateHour;
@@ -25,6 +26,7 @@ let Appointment = class Appointment {
     payoutStatus;
     user;
     doctor;
+    supportTickets;
     schedule;
     pago;
     createdAt;
@@ -67,6 +69,10 @@ __decorate([
     }),
     __metadata("design:type", doctor_entity_1.Doctor)
 ], Appointment.prototype, "doctor", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => supportTickets_entity_1.SupportTicket, (ticket) => ticket.appointment),
+    __metadata("design:type", Array)
+], Appointment.prototype, "supportTickets", void 0);
 __decorate([
     (0, typeorm_1.OneToOne)(() => doctor_schedules_entity_1.DoctorSchedule, (schedule) => schedule.appointment, {
         onDelete: 'CASCADE'

@@ -7,6 +7,7 @@ import { DoctorAvailability } from './doctor-availability.entity';
 import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 import { DoctorDocument } from './doctor-documentation.entity';
 import { UserRole } from 'src/enums/roles.enum';
+import { SupportTicket } from './supportTickets.entity';
 export declare class Doctor {
     id: string;
     profile_image: string;
@@ -20,6 +21,7 @@ export declare class Doctor {
     tarifaPorConsulta: number;
     role: UserRole;
     rejectedReason?: string;
+    supportTickets: SupportTicket[];
     documents: DoctorDocument[];
     schedules: DoctorSchedule[];
     appointments: Appointment[];

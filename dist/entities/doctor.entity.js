@@ -20,6 +20,7 @@ const doctor_availability_entity_1 = require("./doctor-availability.entity");
 const doctorStatus_enum_1 = require("../enums/doctorStatus.enum");
 const doctor_documentation_entity_1 = require("./doctor-documentation.entity");
 const roles_enum_1 = require("../enums/roles.enum");
+const supportTickets_entity_1 = require("./supportTickets.entity");
 let Doctor = class Doctor {
     id;
     profile_image;
@@ -33,6 +34,7 @@ let Doctor = class Doctor {
     tarifaPorConsulta;
     role;
     rejectedReason;
+    supportTickets;
     documents;
     schedules;
     appointments;
@@ -98,6 +100,10 @@ __decorate([
     (0, typeorm_1.Column)({ type: 'text', nullable: true }),
     __metadata("design:type", String)
 ], Doctor.prototype, "rejectedReason", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => supportTickets_entity_1.SupportTicket, (ticket) => ticket.doctor),
+    __metadata("design:type", Array)
+], Doctor.prototype, "supportTickets", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => doctor_documentation_entity_1.DoctorDocument, (doc) => doc.doctor, { cascade: true }),
     __metadata("design:type", Array)
