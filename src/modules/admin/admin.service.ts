@@ -26,8 +26,9 @@ import { UploadService } from '../upload/upload.service';
 import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
 import { log } from 'console';
 import { AppointmentStatus } from 'src/enums/appointment.enum';
-import { SupportTicket } from 'src/entities/supportTickets.entity';
+import { SupportTicket } from 'src/entities/Tickets.entity';
 import { GetTicketsQueryDto } from './dto/getTicketsQuery.dto';
+import { TicketResponseDto } from './dto/ticket-response.dto';
 
 @Injectable()
 export class AdminService {
@@ -327,8 +328,11 @@ export class AdminService {
     }
   }
 
-  async getTickets(query: GetTicketsQueryDto) {
-    const { page = 1, limit = 10, status, priority, role, categories } = query;
+  async getTickets(query: GetTicketsQueryDto): Promise<TicketResponseDto> {
+
+
+    try {
+      const { page = 1, limit = 10, status, priority, role, categories } = query;
     const skip = (page - 1) * limit;
 
     const qb = this.ticketRepo.createQueryBuilder('ticket');
@@ -340,9 +344,9 @@ export class AdminService {
 
       // 2. Selección explícita (Optimizando la consulta al DB)
       .select([
-        'ticket', 
+        'ticket',
         'patient.id',
-        'patient.name',
+        'patient.fullname',
         'patient.profile_image',
         'doctor.id',
         'doctor.fullname',
@@ -391,7 +395,7 @@ export class AdminService {
         status: ticket.status,
         date: ticket.createdAt.toISOString(),
         adminResponse: ticket.adminResponse,
-        bookingId: bookingId, 
+        bookingId: bookingId,
         user: {
           id: userData?.id,
           name: userData?.fullname,
@@ -410,5 +414,12 @@ export class AdminService {
         limit
       }
     };
-  }
+  } catch (error) {
+      throw new InternalServerErrorException(
+        'Error al obtener los reportes del sistema'
+      );
+    }
+    
+}
+
 }

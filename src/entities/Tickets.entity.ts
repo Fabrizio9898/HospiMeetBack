@@ -1,4 +1,3 @@
-
 import {
   Entity,
   PrimaryGeneratedColumn,
@@ -6,7 +5,6 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
-  JoinColumn
 } from 'typeorm';
 import { User } from './user.entity';
 import { TicketPriority } from 'src/enums/tickets/ticketPriority.enum';

@@ -15,7 +15,7 @@ import { UserPayment } from './user-payment.entity';
 import { DoctorSchedule } from './doctor-schedules.entity';
 import { AppointmentStatus } from 'src/enums/appointment.enum';
 import { PayoutStatus } from 'src/enums/payoutStatus.enum';
-import { SupportTicket } from './supportTickets.entity';
+import { SupportTicket } from './Tickets.entity';
 
 @Entity('apointments')
 export class Appointment {
@@ -35,7 +35,7 @@ export class Appointment {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   cost: number;
 
-  @Column({ type: 'enum', enum: PayoutStatus, default: PayoutStatus.UNPAID }) 
+  @Column({ type: 'enum', enum: PayoutStatus, default: PayoutStatus.UNPAID })
   payoutStatus: PayoutStatus;
 
   @ManyToOne(() => User, (usuario) => usuario.appointments, {

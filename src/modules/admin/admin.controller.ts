@@ -26,6 +26,7 @@ import { plainToInstance } from 'class-transformer';
 import { DoctorListResponseDto } from './dto/doctorResponse.dto';
 import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
 import { GetTicketsQueryDto } from './dto/getTicketsQuery.dto';
+import { TicketResponseDto } from './dto/ticket-response.dto';
 
 @Controller('admin')
 export class AdminController {
@@ -101,7 +102,9 @@ export class AdminController {
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  async getTickets(@Query() query: GetTicketsQueryDto) {
+  async getTickets(
+    @Query() query: GetTicketsQueryDto
+  ): Promise<TicketResponseDto> {
     return await this.adminService.getTickets(query);
   }
 }
