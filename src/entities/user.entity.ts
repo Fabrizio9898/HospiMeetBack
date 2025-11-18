@@ -2,16 +2,14 @@ import {
   Column,
   CreateDateColumn,
   Entity,
-  ManyToMany,
   OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
 import { Review } from './review.entity';
 import { Appointment } from './appointment.entity';
 import { UserRole } from 'src/enums/roles.enum';
-import { SupportTicket } from './Tickets.entity';
+import { SupportTicket } from './tickets.entity';
 
 @Entity({ name: 'users' })
 export class User {

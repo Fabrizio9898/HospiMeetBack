@@ -107,4 +107,59 @@ export class AdminController {
   ): Promise<TicketResponseDto> {
     return await this.adminService.getTickets(query);
   }
+
+  // @Patch('tickets/:id/resolve')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  // @ApiOperation({
+  //   summary: 'El admin responde y cierra un ticket (Resuelto o Rechazado)'
+  // })
+  // async resolveTicket(
+  //   @Param('id', ParseUUIDPipe) id: string,
+  //   @Body() resolveDto: ResolveTicketDto
+  //   // ResolveTicketDto debería tener: { status: 'RESOLVED' | 'REJECTED', adminResponse: string }
+  // ) {
+  //   return await this.adminService.resolveTicket(id, resolveDto);
+  // }
+
+  // --- GESTIÓN DE FINANZAS Y PAGOS ---
+
+  @Get('payments/history')
+  @ApiBearerAuth()
+  @UseGuards(AuthGuard)
+  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  @ApiOperation({
+    summary: 'Ver historial de pagos entrantes (lo que pagaron los pacientes)'
+  })
+  async getIncomingPayments(
+    @Query() query: { startDate?: Date; endDate?: Date }
+  ) {
+    // Retorna la lista de AppointmentPayments (transacciones de MercadoPago)
+    // return await this.adminService.getIncomingPayments(query);
+  }
+
+  // --- GESTIÓN DE LIQUIDACIONES (PAGAR A DOCTORES) ---
+
+  // @Get('payouts/preview')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  // @ApiOperation({
+  //   summary: 'Calcula cuánto se le debe a cada doctor hasta la fecha'
+  // })
+  // async previewPayouts() {
+  //   return await this.adminService.previewPendingPayouts();
+  // }
+
+  // @Post('payouts/execute')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // @Roles(UserRole.SUPER_ADMIN) // Solo Super Admin debería poder soltar el dinero
+  // @ApiOperation({
+  //   summary: 'Ejecuta el pago a los doctores y marca las consultas como PAGADAS'
+  // })
+  // async executePayout(@Body() payoutDto: CreatePayoutDto) {
+  //   return await this.adminService.executePayouts(payoutDto);
+  // }
 }

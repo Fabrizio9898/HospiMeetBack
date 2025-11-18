@@ -26,7 +26,7 @@ import { UploadService } from '../upload/upload.service';
 import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
 import { log } from 'console';
 import { AppointmentStatus } from 'src/enums/appointment.enum';
-import { SupportTicket } from 'src/entities/Tickets.entity';
+import { SupportTicket } from 'src/entities/tickets.entity';
 import { GetTicketsQueryDto } from './dto/getTicketsQuery.dto';
 import { TicketResponseDto } from './dto/ticket-response.dto';
 
@@ -329,97 +329,100 @@ export class AdminService {
   }
 
   async getTickets(query: GetTicketsQueryDto): Promise<TicketResponseDto> {
-
-
     try {
-      const { page = 1, limit = 10, status, priority, role, categories } = query;
-    const skip = (page - 1) * limit;
+      const {
+        page = 1,
+        limit = 10,
+        status,
+        priority,
+        role,
+        categories
+      } = query;
+      const skip = (page - 1) * limit;
 
-    const qb = this.ticketRepo.createQueryBuilder('ticket');
+      const qb = this.ticketRepo.createQueryBuilder('ticket');
 
-    // 1. Joins: Unimos sin seleccionar *todos* los campos por defecto.
-    qb.leftJoin('ticket.patient', 'patient')
-      .leftJoin('ticket.doctor', 'doctor')
-      .leftJoin('ticket.appointment', 'appointment')
+      // 1. Joins: Unimos sin seleccionar *todos* los campos por defecto.
+      qb.leftJoin('ticket.patient', 'patient')
+        .leftJoin('ticket.doctor', 'doctor')
+        .leftJoin('ticket.appointment', 'appointment')
 
-      // 2. Selección explícita (Optimizando la consulta al DB)
-      .select([
-        'ticket',
-        'patient.id',
-        'patient.fullname',
-        'patient.profile_image',
-        'doctor.id',
-        'doctor.fullname',
-        'doctor.profile_image',
-        'appointment.id'
-      ]);
+        // 2. Selección explícita (Optimizando la consulta al DB)
+        .select([
+          'ticket',
+          'patient.id',
+          'patient.fullname',
+          'patient.profile_image',
+          'doctor.id',
+          'doctor.fullname',
+          'doctor.profile_image',
+          'appointment.id'
+        ]);
 
-    // Filtros dinámicos
-    if (status) {
-      qb.andWhere('ticket.status = :status', { status });
-    }
+      // Filtros dinámicos
+      if (status) {
+        qb.andWhere('ticket.status = :status', { status });
+      }
 
-    if (priority) {
-      qb.andWhere('ticket.priority = :priority', { priority });
-    }
+      if (priority) {
+        qb.andWhere('ticket.priority = :priority', { priority });
+      }
 
-    if (categories && categories.length > 0) {
-      qb.andWhere('ticket.category IN (:...categories)', { categories });
-    }
+      if (categories && categories.length > 0) {
+        qb.andWhere('ticket.category IN (:...categories)', { categories });
+      }
 
-    if (role) {
-      qb.andWhere('ticket.reporterRole = :role', { role });
-    }
+      if (role) {
+        qb.andWhere('ticket.reporterRole = :role', { role });
+      }
 
-    // Paginación
-    qb.orderBy('ticket.createdAt', 'DESC').skip(skip).take(limit);
+      // Paginación
+      qb.orderBy('ticket.createdAt', 'DESC').skip(skip).take(limit);
 
-    const [tickets, total] = await qb.getManyAndCount();
+      const [tickets, total] = await qb.getManyAndCount();
 
-    // Mapeo de datos
-    const formattedTickets = tickets.map((ticket) => {
-      const isDoctor = ticket.reporterRole === UserRole.DOCTOR;
-      const userData = isDoctor ? ticket.doctor : ticket.patient;
+      // Mapeo de datos
+      const formattedTickets = tickets.map((ticket) => {
+        const isDoctor = ticket.reporterRole === UserRole.DOCTOR;
+        const userData = isDoctor ? ticket.doctor : ticket.patient;
 
-      // NOTA: Extracción del ID del appointment (ticket.appointment contiene SOLO el ID)
-      const bookingId = ticket.appointment
-        ? (ticket.appointment as any).id
-        : null;
+        // NOTA: Extracción del ID del appointment (ticket.appointment contiene SOLO el ID)
+        const bookingId = ticket.appointment
+          ? (ticket.appointment as any).id
+          : null;
+
+        return {
+          id: ticket.id,
+          subject: ticket.subject,
+          description: ticket.description,
+          category: ticket.category,
+          priority: ticket.priority,
+          status: ticket.status,
+          date: ticket.createdAt.toISOString(),
+          adminResponse: ticket.adminResponse,
+          bookingId: bookingId,
+          user: {
+            id: userData?.id,
+            name: userData?.fullname,
+            role: ticket.reporterRole,
+            image: userData?.profile_image
+          }
+        };
+      });
 
       return {
-        id: ticket.id,
-        subject: ticket.subject,
-        description: ticket.description,
-        category: ticket.category,
-        priority: ticket.priority,
-        status: ticket.status,
-        date: ticket.createdAt.toISOString(),
-        adminResponse: ticket.adminResponse,
-        bookingId: bookingId,
-        user: {
-          id: userData?.id,
-          name: userData?.fullname,
-          role: ticket.reporterRole,
-          image: userData?.profile_image
+        data: formattedTickets,
+        meta: {
+          total,
+          page,
+          lastPage: Math.ceil(total / limit),
+          limit
         }
       };
-    });
-
-    return {
-      data: formattedTickets,
-      meta: {
-        total,
-        page,
-        lastPage: Math.ceil(total / limit),
-        limit
-      }
-    };
-  } catch (error) {
+    } catch (error) {
       throw new InternalServerErrorException(
         'Error al obtener los reportes del sistema'
       );
     }
-    
-}
-
+  }
 }

@@ -17,7 +17,7 @@ import { DoctorAvailability } from './doctor-availability.entity';
 import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 import { DoctorDocument } from './doctor-documentation.entity';
 import { UserRole } from 'src/enums/roles.enum';
-import { SupportTicket } from './Tickets.entity';
+import { SupportTicket } from './tickets.entity';
 
 @Entity('doctors')
 export class Doctor {
@@ -92,6 +92,9 @@ export class Doctor {
     inverseJoinColumn: { name: 'specialityId', referencedColumnName: 'id' } // columna que referencia Especialidad
   })
   specialities: DoctorSpeciality[];
+
+  @Column({ type: 'timestamp', nullable: true })
+  lastPaymentDate: Date;
 
   @CreateDateColumn()
   createdAt: Date;
