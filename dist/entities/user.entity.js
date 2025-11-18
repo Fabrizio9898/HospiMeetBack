@@ -14,6 +14,7 @@ const typeorm_1 = require("typeorm");
 const review_entity_1 = require("./review.entity");
 const appointment_entity_1 = require("./appointment.entity");
 const roles_enum_1 = require("../enums/roles.enum");
+const supportTickets_entity_1 = require("./supportTickets.entity");
 let User = class User {
     id;
     name;
@@ -22,6 +23,7 @@ let User = class User {
     password;
     role;
     reviews;
+    supportTickets;
     appointments;
     createdAt;
     updatedAt;
@@ -57,6 +59,10 @@ __decorate([
     (0, typeorm_1.OneToMany)(() => review_entity_1.Review, (review) => review.user, { nullable: true }),
     __metadata("design:type", Array)
 ], User.prototype, "reviews", void 0);
+__decorate([
+    (0, typeorm_1.OneToMany)(() => supportTickets_entity_1.SupportTicket, (ticket) => ticket.patient),
+    __metadata("design:type", Array)
+], User.prototype, "supportTickets", void 0);
 __decorate([
     (0, typeorm_1.OneToMany)(() => appointment_entity_1.Appointment, (reservation) => reservation.user, {
         nullable: true,

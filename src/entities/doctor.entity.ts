@@ -17,6 +17,7 @@ import { DoctorAvailability } from './doctor-availability.entity';
 import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 import { DoctorDocument } from './doctor-documentation.entity';
 import { UserRole } from 'src/enums/roles.enum';
+import { SupportTicket } from './supportTickets.entity';
 
 @Entity('doctors')
 export class Doctor {
@@ -60,8 +61,11 @@ export class Doctor {
   @Column({ type: 'enum', enum: UserRole, default: UserRole.DOCTOR })
   role: UserRole;
 
-  @Column({ type: 'text',  nullable: true })
+  @Column({ type: 'text', nullable: true })
   rejectedReason?: string;
+
+  @OneToMany(() => SupportTicket, (ticket) => ticket.doctor)
+  supportTickets: SupportTicket[];
 
   @OneToMany(() => DoctorDocument, (doc) => doc.doctor, { cascade: true })
   documents: DoctorDocument[];

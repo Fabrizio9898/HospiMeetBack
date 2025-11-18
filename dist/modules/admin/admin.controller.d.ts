@@ -42,6 +42,7 @@ export declare class AdminController {
         tarifaPorConsulta: number;
         role: UserRole;
         rejectedReason?: string;
+        supportTickets: import("../../entities/supportTickets.entity").SupportTicket[];
         schedules: import("../../entities/doctor-schedules.entity").DoctorSchedule[];
         appointments: import("../../entities/appointment.entity").Appointment[];
         reviews: import("../../entities/review.entity").Review[];

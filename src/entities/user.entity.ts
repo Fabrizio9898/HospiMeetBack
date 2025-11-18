@@ -11,6 +11,7 @@ import {
 import { Review } from './review.entity';
 import { Appointment } from './appointment.entity';
 import { UserRole } from 'src/enums/roles.enum';
+import { SupportTicket } from './supportTickets.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -37,6 +38,9 @@ export class User {
 
   @OneToMany(() => Review, (review) => review.user, { nullable: true })
   reviews: Review[];
+
+  @OneToMany(() => SupportTicket, (ticket) => ticket.patient)
+  supportTickets: SupportTicket[];
 
   @OneToMany(() => Appointment, (reservation) => reservation.user, {
     nullable: true,
