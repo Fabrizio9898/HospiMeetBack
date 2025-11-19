@@ -29,6 +29,8 @@ import { AppointmentStatus } from 'src/enums/appointment.enum';
 import { SupportTicket } from 'src/entities/tickets.entity';
 import { GetTicketsQueryDto } from './dto/getTicketsQuery.dto';
 import { TicketResponseDto } from './dto/ticket-response.dto';
+import { PatientResponseDto } from './dto/patientResponse.dto';
+import { isEmpty } from 'class-validator';
 
 @Injectable()
 export class AdminService {
@@ -425,5 +427,25 @@ export class AdminService {
         'Error al obtener los reportes del sistema'
       );
     }
+  }
+
+
+  async findPatient(id:string):Promise<PatientResponseDto>{
+   const user: User | undefined = await this.userRepository.findOne({
+     where: { id },
+     relations: [
+       'appointments',
+       'appointments.doctor',
+       'reviews',
+       'supportTickets'
+     ],
+     order: {
+       createdAt: 'DESC' // Ordenar citas por fecha
+     }
+   });
+    if (isEmpty(user)) {
+      throw new ApiError(ApiStatusEnum.USER_NOT_FOUND, NotFoundException);
+    }
+    return user;
   }
 }

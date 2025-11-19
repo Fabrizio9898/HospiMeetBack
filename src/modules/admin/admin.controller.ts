@@ -49,6 +49,12 @@ export class AdminController {
     return await this.adminService.login(data);
   }
 
+
+  @Get('patient/:id')
+async getUser(@Param('id') id: string) {
+  return await this.adminService.findPatient(id);}
+
+
   @Get('doctors')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
