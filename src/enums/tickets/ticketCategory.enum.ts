@@ -1,7 +1,8 @@
 export enum TicketCategory {
-  BOOKING_ISSUE = 'appointment_issue', // Problema con turno (Dr no vino, etc.)
-  PAYMENT_ISSUE = 'payment_issue', // Problema de plata/reembolso
-  TECHNICAL_ISSUE = 'technical_issue', // App fallando / Video
-  ACCOUNT_ISSUE = 'account_issue', // Login / Perfil
-  OTHER = 'other'
+  BOOKING_ISSUE = 'Problema Turno',
+  PAYMENT_ISSUE = 'Problema Pago',
+  TECHNICAL_ISSUE = 'Falla Técnica',
+  ACCOUNT_ISSUE = 'Cuenta/Login',
+  REPORT_USER = 'Reportar Usuario',
+  OTHER = 'Otro'
 }

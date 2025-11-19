@@ -53,7 +53,7 @@ export class SupportTicket {
   description: string; // El detalle largo del problema
 
   @Column({ name: 'attachment_url', nullable: true })
-  attachmentUrl: string; // URL de Supabase Storage con la captura de pantalla
+  attachmentUrl: string; 
 
   // --- GESTIÓN DEL ESTADO ---
 
