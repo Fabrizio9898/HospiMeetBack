@@ -3,6 +3,7 @@ import { TicketCategory } from 'src/enums/tickets/ticketCategory.enum';
 import { TicketPriority } from 'src/enums/tickets/ticketPriority.enum';
 import { TicketStatus } from 'src/enums/tickets/ticketStatus.enum';
 import { UserRole } from 'src/enums/roles.enum';
+import { TicketReason } from 'src/enums/tickets/ticketReason.enum';
 
 export class TicketUserDto {
   @ApiProperty()
@@ -33,6 +34,9 @@ export class TicketDto {
 
   @ApiProperty({ enum: TicketPriority })
   priority: TicketPriority;
+
+  @ApiProperty({ enum: TicketReason })
+  reason: TicketReason;
 
   @ApiProperty({ enum: TicketStatus })
   status: TicketStatus;

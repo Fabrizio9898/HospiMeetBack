@@ -13,6 +13,7 @@ import { Appointment } from './appointment.entity';
 import { TicketStatus } from 'src/enums/tickets/ticketStatus.enum';
 import { Doctor } from './doctor.entity';
 import { UserRole } from 'src/enums/roles.enum';
+import { TicketReason } from 'src/enums/tickets/ticketReason.enum';
 
 
 @Entity('support_tickets')
@@ -25,19 +26,25 @@ export class SupportTicket {
 
   @ManyToOne(() => Doctor, (doctor) => doctor.supportTickets, {
     nullable: true
-  }) 
+  })
   doctor: Doctor;
 
   @Column({ type: 'enum', enum: UserRole })
   reporterRole: UserRole;
 
-  @ManyToOne(() => Appointment, (appointment)=>appointment.supportTickets,{ nullable: true })
+  @ManyToOne(() => Appointment, (appointment) => appointment.supportTickets, {
+    nullable: true
+  })
   appointment: Appointment;
 
   // --- DATOS DEL PROBLEMA ---
 
   @Column({ type: 'enum', enum: TicketCategory })
   category: TicketCategory;
+
+  // NUEVA COLUMNA
+  @Column({ type: 'enum', enum: TicketReason, nullable: false })
+  reason: TicketReason;
 
   @Column({
     type: 'enum',
@@ -53,7 +60,7 @@ export class SupportTicket {
   description: string; // El detalle largo del problema
 
   @Column({ name: 'attachment_url', nullable: true })
-  attachmentUrl: string; 
+  attachmentUrl: string;
 
   // --- GESTIÓN DEL ESTADO ---
 

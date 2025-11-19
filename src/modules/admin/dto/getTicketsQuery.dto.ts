@@ -37,11 +37,11 @@ export class GetTicketsQueryDto {
 
   @IsOptional()
   @IsEnum(UserRole)
-  role?: UserRole; // Filtrar: ¿Quiero ver reportes de doctores o pacientes?
+  role?: UserRole;
 
   @IsOptional()
   @IsArray()
-  @IsEnum(TicketCategory, { each: true }) // Valida que cada item del array sea una categoría válida
-  @Type(() => String) // Transforma query param "cat1,cat2" si usas un custom pipe, o array directo
+  @IsEnum(TicketCategory, { each: true })
+  @Type(() => String)
   categories?: TicketCategory[];
 }

@@ -398,6 +398,7 @@ export class AdminService {
           category: ticket.category,
           priority: ticket.priority,
           status: ticket.status,
+          reason: ticket.reason,
           date: ticket.createdAt.toISOString(),
           adminResponse: ticket.adminResponse,
           bookingId: bookingId,

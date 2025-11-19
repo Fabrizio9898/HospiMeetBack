@@ -45,6 +45,9 @@ export class Doctor {
   @Column({ type: 'varchar', length: 50, unique: true })
   medicalLicenseNumber: string;
 
+  @Column({ default: 0 })
+  strikes: number; // Cantidad de faltas
+
   @Column({
     type: 'enum',
     enum: Doctor_Status,
