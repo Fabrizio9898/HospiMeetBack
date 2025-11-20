@@ -46,6 +46,13 @@ export class User {
   })
   appointments: Appointment[];
 
+  @Column({ name: 'reset_password_token', nullable: true })
+  resetPasswordToken: string;
+
+  // Fecha de expiración del token
+  @Column({ name: 'reset_password_expires', type: 'timestamp', nullable: true })
+  resetPasswordExpires: Date;
+  
   @CreateDateColumn()
   createdAt: Date;
 
