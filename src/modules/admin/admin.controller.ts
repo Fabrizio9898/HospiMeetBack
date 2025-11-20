@@ -30,6 +30,14 @@ import { TicketResponseDto } from './dto/ticket-response.dto';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
+  @Get("all")
+  @Roles(UserRole.SUPER_ADMIN)
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  async getAdmins(@Param('id') id: string) {
+    return await this.adminService.findPatient(id);
+  }
+
   @Post('register')
   @Roles(UserRole.SUPER_ADMIN)
   @UseGuards(AuthGuard)
@@ -47,11 +55,12 @@ export class AdminController {
     return await this.adminService.login(data);
   }
 
-
   @Get('patient/:id')
-async getUser(@Param('id') id: string) {
-  return await this.adminService.findPatient(id);}
-
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  async getUser(@Param('id') id: string) {
+    return await this.adminService.findPatient(id);
+  }
 
   @Get('doctors')
   @UseGuards(AuthGuard)
