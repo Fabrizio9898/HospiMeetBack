@@ -8,7 +8,7 @@ import { Doctor } from 'src/entities/doctor.entity';
 import { DoctorsModule } from '../doctors/doctors.module';
 import { Appointment } from 'src/entities/appointment.entity';
 import { UploadModule } from '../upload/upload.module';
-import { SupportTicket } from 'src/entities/tickets.entity';
+import { SupportTicket } from 'src/entities/SupportTicket.entity';
 
 @Module({
   imports: [

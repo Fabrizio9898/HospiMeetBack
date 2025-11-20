@@ -17,7 +17,7 @@ import { DoctorAvailability } from './doctor-availability.entity';
 import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 import { DoctorDocument } from './doctor-documentation.entity';
 import { UserRole } from 'src/enums/roles.enum';
-import { SupportTicket } from './tickets.entity';
+import { SupportTicket } from './SupportTicket.entity';
 
 @Entity('doctors')
 export class Doctor {

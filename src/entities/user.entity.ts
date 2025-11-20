@@ -9,7 +9,7 @@ import {
 import { Review } from './review.entity';
 import { Appointment } from './appointment.entity';
 import { UserRole } from 'src/enums/roles.enum';
-import { SupportTicket } from './tickets.entity';
+import { SupportTicket } from './SupportTicket.entity';
 
 @Entity({ name: 'users' })
 export class User {

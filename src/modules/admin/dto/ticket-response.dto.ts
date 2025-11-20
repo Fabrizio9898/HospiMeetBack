@@ -10,7 +10,7 @@ export class TicketUserDto {
   id: string;
 
   @ApiProperty()
-  name: string;
+  fullname: string;
 
   @ApiProperty({ enum: UserRole })
   role: UserRole;

@@ -5,13 +5,11 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   UseGuards,
   Query,
   UsePipes,
   ValidationPipe,
   ParseUUIDPipe,
-  BadRequestException
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';

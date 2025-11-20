@@ -15,7 +15,7 @@ import { UserPayment } from './user-payment.entity';
 import { DoctorSchedule } from './doctor-schedules.entity';
 import { AppointmentStatus } from 'src/enums/appointment.enum';
 import { PayoutStatus } from 'src/enums/payoutStatus.enum';
-import { SupportTicket } from './tickets.entity';
+import { SupportTicket } from './SupportTicket.entity';
 import { DoctorPayment } from './doctor-payment.entity';
 
 @Entity('apointments')

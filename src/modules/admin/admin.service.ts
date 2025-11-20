@@ -26,7 +26,7 @@ import { UploadService } from '../upload/upload.service';
 import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
 import { log } from 'console';
 import { AppointmentStatus } from 'src/enums/appointment.enum';
-import { SupportTicket } from 'src/entities/tickets.entity';
+import { SupportTicket } from 'src/entities/SupportTicket.entity';
 import { GetTicketsQueryDto } from './dto/getTicketsQuery.dto';
 import { TicketResponseDto } from './dto/ticket-response.dto';
 import { PatientResponseDto } from './dto/patientResponse.dto';
@@ -406,7 +406,7 @@ export class AdminService {
           bookingId: bookingId,
           user: {
             id: userData?.id,
-            name: userData?.fullname,
+            fullname: userData?.fullname,
             role: ticket.reporterRole,
             image: userData?.profile_image
           }
@@ -429,20 +429,19 @@ export class AdminService {
     }
   }
 
-
-  async findPatient(id:string):Promise<PatientResponseDto>{
-   const user: User | undefined = await this.userRepository.findOne({
-     where: { id },
-     relations: [
-       'appointments',
-       'appointments.doctor',
-       'reviews',
-       'supportTickets'
-     ],
-     order: {
-       createdAt: 'DESC' // Ordenar citas por fecha
-     }
-   });
+  async findPatient(id: string): Promise<PatientResponseDto> {
+    const user: User | undefined = await this.userRepository.findOne({
+      where: { id },
+      relations: [
+        'appointments',
+        'appointments.doctor',
+        'reviews',
+        'supportTickets'
+      ],
+      order: {
+        createdAt: 'DESC' // Ordenar citas por fecha
+      }
+    });
     if (isEmpty(user)) {
       throw new ApiError(ApiStatusEnum.USER_NOT_FOUND, NotFoundException);
     }
