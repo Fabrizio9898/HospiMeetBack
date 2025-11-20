@@ -406,7 +406,7 @@ export class AdminService {
           bookingId: bookingId,
           user: {
             id: userData?.id,
-            name: userData?.fullname,
+            fullname: userData?.fullname,
             role: ticket.reporterRole,
             image: userData?.profile_image
           }
