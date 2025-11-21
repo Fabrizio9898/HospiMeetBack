@@ -8,7 +8,7 @@ import {
 import { CreateAdminDto } from './dto/create-admin.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
-import { Between, Brackets, Repository } from 'typeorm';
+import { Between, Brackets, In, Repository } from 'typeorm';
 import generator from 'generate-password';
 import * as bcrypt from 'bcrypt';
 import { ApiError } from 'src/helpers/apiError.helper';
@@ -446,5 +446,20 @@ export class AdminService {
       throw new ApiError(ApiStatusEnum.USER_NOT_FOUND, NotFoundException);
     }
     return user;
+  }
+
+  async getAdmins() {
+    const admins = await this.userRepository.find({
+      where: {
+        role: In([UserRole.ADMIN, UserRole.SUPER_ADMIN])
+      },
+      // Seleccionamos solo lo necesario por seguridad (evitar enviar passwords)
+      select: ['id', 'fullname', 'email', 'role', 'profile_image', 'createdAt'],
+      order: {
+        createdAt: 'DESC' 
+      }
+    });
+
+    return admins;
   }
 }

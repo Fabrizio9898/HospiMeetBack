@@ -35,7 +35,7 @@ export class AdminController {
   @UseGuards(AuthGuard)
   @ApiBearerAuth()
   async getAdmins(@Param('id') id: string) {
-    return await this.adminService.findPatient(id);
+    return await this.adminService.getAdmins();
   }
 
   @Post('register')
