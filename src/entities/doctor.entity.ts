@@ -18,6 +18,9 @@ import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 import { DoctorDocument } from './doctor-documentation.entity';
 import { UserRole } from 'src/enums/roles.enum';
 import { SupportTicket } from './SupportTicket.entity';
+import { Subscription } from './subscription.entity';
+import { Patient } from './patient.entity';
+import { SubscriptionPlan } from 'src/dtos/subscriptionPlan.dto';
 
 @Entity('doctors')
 export class Doctor {
@@ -39,11 +42,24 @@ export class Doctor {
   @Column({ type: 'varchar', length: 100 })
   fullname: string;
 
+  @Column({ type: 'varchar', nullable: true })
+  stripeCustomerId: string; 
+
+  @Column({
+    type: 'enum',
+    enum: SubscriptionPlan,
+    default: SubscriptionPlan.FREE_TRIAL
+  })
+  currentPlan: SubscriptionPlan;
+
+  @Column({ type: 'timestamp', nullable: true })
+  planExpiresAt: Date;
+
   @Column({ type: 'varchar', length: 20, unique: true })
   dni: string;
 
-  @Column({ type: 'varchar', length: 50, unique: true })
-  medicalLicenseNumber: string;
+  @Column({ type: 'varchar', length: 50, unique: true, nullable: true })
+  medicalLicenseNumber?: string;
 
   @Column({ default: 0 })
   strikes: number; // Cantidad de faltas
@@ -55,17 +71,30 @@ export class Doctor {
   })
   status: Doctor_Status;
 
-  @Column({ type: 'varchar', length: 20 })
-  phoneNumber: string;
+  @Column({ name: 'reset_password_token', nullable: true })
+  resetPasswordToken: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  tarifaPorConsulta: number; // Precio base por cita
+  // Fecha de expiración del token
+  @Column({ name: 'reset_password_expires', type: 'timestamp', nullable: true })
+  resetPasswordExpires: Date;
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  phoneNumber?: string;
+
+  @Column({ type: 'decimal', precision: 10, scale: 2, nullable: true })
+  tarifaPorConsulta?: number; // Precio base por cita
 
   @Column({ type: 'enum', enum: UserRole, default: UserRole.DOCTOR })
   role: UserRole;
 
   @Column({ type: 'text', nullable: true })
   rejectedReason?: string;
+
+  @OneToMany(() => Patient, (patient) => patient.doctor)
+  patients: Patient[];
+
+  @OneToMany(() => Subscription, (sub) => sub.doctor)
+  subscriptions: Subscription[];
 
   @OneToMany(() => SupportTicket, (ticket) => ticket.doctor)
   supportTickets: SupportTicket[];

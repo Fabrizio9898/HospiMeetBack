@@ -1,0 +1,45 @@
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  OneToMany,
+  CreateDateColumn,
+  UpdateDateColumn
+} from 'typeorm';
+import { Doctor } from './doctor.entity';
+import { Appointment } from './appointment.entity';
+
+@Entity('patients')
+export class Patient {
+  @PrimaryGeneratedColumn('uuid')
+  id: string;
+
+  @Column({ type: 'varchar', length: 150 })
+  name: string; // Nombre completo del paciente
+
+  @Column({ type: 'varchar', length: 100, nullable: true })
+  email?: string; // Opcional: para enviar el link de pago por correo
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  phone?: string; // Opcional: para enviar link por WhatsApp
+
+  @Column({ type: 'varchar', length: 20, nullable: true })
+  dni?: string; // Opcional: para facturación o historial médico
+
+  // RELACIÓN CLAVE: El paciente "pertenece" a un Doctor
+  @ManyToOne(() => Doctor, (doctor) => doctor.patients, {
+    onDelete: 'CASCADE' // Si se borra el doctor, se borran sus pacientes (lógica SaaS)
+  })
+  doctor: Doctor;
+
+  // Un paciente puede tener múltiples turnos históricos o futuros
+  @OneToMany(() => Appointment, (appointment) => appointment.patient)
+  appointments: Appointment[];
+
+  @CreateDateColumn()
+  createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+}

@@ -5,7 +5,8 @@ import {
   ManyToOne,
   CreateDateColumn,
   UpdateDateColumn,
-  OneToMany
+  OneToMany,
+  OneToOne
 } from 'typeorm';
 import { Doctor } from './doctor.entity';
 import { DoctorPaymentStatus } from 'src/enums/doctorPaymentStatus.enum';
@@ -23,10 +24,10 @@ export class DoctorPayment {
   montoNeto: number;
 
   @Column({ type: 'date', nullable: true })
-  periodStart: Date; 
+  periodStart?: Date;
 
   @Column({ type: 'date', nullable: true })
-  periodEnd: Date;
+  periodEnd?: Date;
 
   @Column({
     type: 'enum',

@@ -9,7 +9,6 @@ import {
   JoinColumn,
   OneToMany
 } from 'typeorm';
-import { User } from './user.entity';
 import { Doctor } from './doctor.entity';
 import { UserPayment } from './user-payment.entity';
 import { DoctorSchedule } from './doctor-schedules.entity';
@@ -17,6 +16,7 @@ import { AppointmentStatus } from 'src/enums/appointment.enum';
 import { PayoutStatus } from 'src/enums/payoutStatus.enum';
 import { SupportTicket } from './SupportTicket.entity';
 import { DoctorPayment } from './doctor-payment.entity';
+import { Patient } from './patient.entity';
 
 @Entity('apointments')
 export class Appointment {
@@ -39,29 +39,43 @@ export class Appointment {
 
   // 2. LO QUE TE QUEDAS TÚ (Comisión)
   // Se calcula al crear la cita: cost * 0.20
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  platformFee: number;
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+    nullable: true
+  })
+  platformFee?: number;
 
   // 3. LO QUE LE CORRESPONDE AL DOCTOR (Neto Individual)
   // Se calcula al crear la cita: cost - platformFee
-  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
-  doctorNetIncome: number;
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    default: 0,
+    nullable: true
+  })
+  doctorNetIncome?: number;
+
+  @Column({ type: 'varchar', nullable: true })
+  meetingLink: string; // <--- AGREGADO: Necesitas guardar el link de Jitsi/Meet aquí
 
   @Column({ type: 'enum', enum: PayoutStatus, default: PayoutStatus.UNPAID })
   payoutStatus: PayoutStatus;
 
-  @ManyToOne(() => User, (usuario) => usuario.appointments, {
+  @ManyToOne(() => Patient, (patient) => patient.appointments, {
     onDelete: 'CASCADE'
   })
-  user: User;
+  patient: Patient;
 
   @ManyToOne(() => Doctor, (doctor) => doctor.appointments, {
     onDelete: 'CASCADE'
   })
   doctor: Doctor;
 
-  // 5. RELACIÓN CON EL PAGO GRUPAL (El "Sobre")
-  // Esto dice: "Esta cita de $80 se pagó dentro del Sobre #555"
+
   @ManyToOne(() => DoctorPayment, (payment) => payment.appointments, {
     nullable: true
   })

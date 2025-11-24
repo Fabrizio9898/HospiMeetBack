@@ -10,6 +10,8 @@ import { Review } from './review.entity';
 import { Appointment } from './appointment.entity';
 import { UserRole } from 'src/enums/roles.enum';
 import { SupportTicket } from './SupportTicket.entity';
+import { ManyToOne } from 'typeorm/browser';
+import { Doctor } from './doctor.entity';
 
 @Entity({ name: 'users' })
 export class User {
@@ -31,20 +33,11 @@ export class User {
   @Column({ length: 128, nullable: false })
   password: string;
 
-  @Column({ type: 'enum', enum: UserRole, default: UserRole.PATIENT })
+  @ManyToOne(()=>Doctor)
+  doctor:Doctor
+
+  @Column({ type: 'enum', enum: UserRole, default: UserRole.ASSISTANT })
   role: UserRole;
-
-  @OneToMany(() => Review, (review) => review.user, { nullable: true })
-  reviews: Review[];
-
-  @OneToMany(() => SupportTicket, (ticket) => ticket.patient)
-  supportTickets: SupportTicket[];
-
-  @OneToMany(() => Appointment, (reservation) => reservation.user, {
-    nullable: true,
-    cascade: true
-  })
-  appointments: Appointment[];
 
   @Column({ name: 'reset_password_token', nullable: true })
   resetPasswordToken: string;
