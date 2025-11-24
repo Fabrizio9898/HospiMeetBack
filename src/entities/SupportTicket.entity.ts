@@ -4,30 +4,25 @@ import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
-  ManyToOne,
+  ManyToOne
 } from 'typeorm';
-import { User } from './user.entity';
 import { TicketPriority } from 'src/enums/tickets/ticketPriority.enum';
 import { TicketCategory } from 'src/enums/tickets/ticketCategory.enum';
 import { Appointment } from './appointment.entity';
 import { TicketStatus } from 'src/enums/tickets/ticketStatus.enum';
-import { Doctor } from './doctor.entity';
+import { User } from './doctor.entity';
 import { UserRole } from 'src/enums/roles.enum';
 import { TicketReason } from 'src/enums/tickets/ticketReason.enum';
-
 
 @Entity('support_tickets')
 export class SupportTicket {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => User, (user) => user.supportTickets, { nullable: true })
-  patient: User;
-
-  @ManyToOne(() => Doctor, (doctor) => doctor.supportTickets, {
+  @ManyToOne(() => User, (doctor) => doctor.supportTickets, {
     nullable: true
   })
-  doctor: Doctor;
+  doctor: User;
 
   @Column({ type: 'enum', enum: UserRole })
   reporterRole: UserRole;

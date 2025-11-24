@@ -9,8 +9,8 @@ import {
   JoinColumn,
   OneToMany
 } from 'typeorm';
-import { Doctor } from './doctor.entity';
-import { UserPayment } from './user-payment.entity';
+import { User } from './doctor.entity';
+import { PatientPayment } from './user-payment.entity';
 import { DoctorSchedule } from './doctor-schedules.entity';
 import { AppointmentStatus } from 'src/enums/appointment.enum';
 import { PayoutStatus } from 'src/enums/payoutStatus.enum';
@@ -70,11 +70,10 @@ export class Appointment {
   })
   patient: Patient;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.appointments, {
+  @ManyToOne(() => User, (doctor) => doctor.appointments, {
     onDelete: 'CASCADE'
   })
-  doctor: Doctor;
-
+  doctor: User;
 
   @ManyToOne(() => DoctorPayment, (payment) => payment.appointments, {
     nullable: true
@@ -90,8 +89,8 @@ export class Appointment {
   @JoinColumn({ name: 'scheduleId' }) // FK explícita en esta tabla
   schedule: DoctorSchedule;
 
-  @OneToOne(() => UserPayment, (pago) => pago.turno)
-  pago: UserPayment;
+  @OneToOne(() => PatientPayment, (pago) => pago.turno)
+  pago: PatientPayment;
 
   @CreateDateColumn()
   createdAt: Date;

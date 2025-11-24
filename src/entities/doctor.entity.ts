@@ -10,7 +10,6 @@ import {
 } from 'typeorm';
 import { DoctorSchedule } from './doctor-schedules.entity';
 import { Appointment } from './appointment.entity';
-import { Review } from './review.entity';
 import { DoctorPayment } from './doctor-payment.entity';
 import { DoctorSpeciality } from './doctor-especiality.entity';
 import { DoctorAvailability } from './doctor-availability.entity';
@@ -22,8 +21,8 @@ import { Subscription } from './subscription.entity';
 import { Patient } from './patient.entity';
 import { SubscriptionPlan } from 'src/dtos/subscriptionPlan.dto';
 
-@Entity('doctors')
-export class Doctor {
+@Entity('user')
+export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
@@ -107,9 +106,6 @@ export class Doctor {
 
   @OneToMany(() => Appointment, (turno) => turno.doctor)
   appointments: Appointment[];
-
-  @OneToMany(() => Review, (review) => review.doctor)
-  reviews: Review[];
 
   @OneToMany(() => DoctorPayment, (pago) => pago.doctor)
   pagosHonorarios: DoctorPayment[];

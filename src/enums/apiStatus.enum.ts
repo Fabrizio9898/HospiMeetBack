@@ -9,6 +9,10 @@ export enum ApiStatusEnum {
   INVALID_TOKEN = 'el token es invalido o ha expirado',
   TOKEN_SIGN_SUCCESSFUL = 'firma de token exitosa',
 
+  //SUBSCRIPCIONES
+  SUBSCRIPTION_REQUIRED = 'Se requiere subscripción para acceder a estas funciones',
+  SUBSCRIPTION_EXPIRED = 'Subscripción vencida',
+
   // Registration
   REGISTRATION_FAIL = 'Error al registrar el usuario',
   REGISTRATION_SUCCESS = 'Registrado correctamente',

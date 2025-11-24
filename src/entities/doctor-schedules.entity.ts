@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
   OneToOne
 } from 'typeorm';
-import { Doctor } from './doctor.entity';
+import { User } from './doctor.entity';
 import { Appointment } from './appointment.entity';
 import { DoctorScheduleStatus } from 'src/enums/doctor-schedule.enum';
 
@@ -29,13 +29,13 @@ export class DoctorSchedule {
     type: 'enum',
     enum: DoctorScheduleStatus,
     default: DoctorScheduleStatus.AVAILABLE
-  }) 
+  })
   estado: DoctorScheduleStatus;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.schedules, {
+  @ManyToOne(() => User, (doctor) => doctor.schedules, {
     onDelete: 'CASCADE'
   })
-  doctor: Doctor;
+  doctor: User;
 
   @OneToOne(() => Appointment, (appointment) => appointment.schedule)
   appointment: Appointment;

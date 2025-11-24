@@ -1,5 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
-import { CreateDoctorDto } from './create-doctor.dto';
+import { CreateDoctorDto } from '../auth/dtos/create-doctor.dto';
 import { IsNumber, IsOptional, IsPositive, Min } from 'class-validator';
 
 export class UpdateDoctorDto extends PartialType(CreateDoctorDto) {

@@ -1,12 +1,18 @@
 import { PartialType, PickType } from '@nestjs/mapped-types';
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNotEmpty, IsString, Length, Matches, Validate } from 'class-validator';
-import { User } from 'src/entities/user.entity';
+import {
+  IsNotEmpty,
+  IsString,
+  Length,
+  Matches,
+  Validate
+} from 'class-validator';
+import { User } from 'src/entities/doctor.entity';
 import { MatchPassword } from 'src/validator/matchPassword.validator';
 
-
-export class UpdateUserDto extends PartialType(PickType( User,["email"] as const)) {}
-
+export class UpdateUserDto extends PartialType(
+  PickType(User, ['email'] as const)
+) {}
 
 export class UpdatePasswordDto {
   @ApiProperty({

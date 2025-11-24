@@ -18,7 +18,6 @@ import { ApiBearerAuth, ApiBody, ApiOperation } from '@nestjs/swagger';
 import { UserRole } from 'src/enums/roles.enum';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { LoginDto } from 'src/dtos/login.dto';
-import { UserLoginResponse } from '../users/auth/dtos/loginResponse.dto';
 import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
 import { plainToInstance } from 'class-transformer';
 import { DoctorListResponseDto } from './dto/doctorResponse.dto';
@@ -30,13 +29,13 @@ import { TicketResponseDto } from './dto/ticket-response.dto';
 export class AdminController {
   constructor(private readonly adminService: AdminService) {}
 
-  @Get("all")
-  @Roles(UserRole.SUPER_ADMIN)
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth()
-  async getAdmins(@Param('id') id: string) {
-    return await this.adminService.getAdmins();
-  }
+  // @Get("all")
+  // @Roles(UserRole.SUPER_ADMIN)
+  // @UseGuards(AuthGuard)
+  // @ApiBearerAuth()
+  // async getAdmins(@Param('id') id: string) {
+  //   return await this.adminService.getAdmins();
+  // }
 
   @Post('register')
   @Roles(UserRole.SUPER_ADMIN)
@@ -50,76 +49,76 @@ export class AdminController {
     return await this.adminService.create(createAdminDto);
   }
 
-  @Post('login')
-  async login(@Body() data: LoginDto): Promise<UserLoginResponse> {
-    return await this.adminService.login(data);
-  }
+  // @Post('login')
+  // async login(@Body() data: LoginDto): Promise<UserLoginResponse> {
+  //   return await this.adminService.login(data);
+  // }
 
-  @Get('patient/:id')
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth()
-  async getUser(@Param('id') id: string) {
-    return await this.adminService.findPatient(id);
-  }
+  // @Get('patient/:id')
+  // @UseGuards(AuthGuard)
+  // @ApiBearerAuth()
+  // async getUser(@Param('id') id: string) {
+  //   return await this.adminService.findPatient(id);
+  // }
 
-  @Get('doctors')
-  @UseGuards(AuthGuard)
-  @ApiBearerAuth()
-  @UsePipes(
-    new ValidationPipe({
-      transform: true,
-      whitelist: true
-    })
-  )
-  @ApiBearerAuth()
-  async getDoctors(@Query() doctorQuery: GetDoctorsQueryDto) {
-    const response = await this.adminService.getDoctors(doctorQuery);
-    return plainToInstance(DoctorListResponseDto, response);
-  }
+  // @Get('doctors')
+  // @UseGuards(AuthGuard)
+  // @ApiBearerAuth()
+  // @UsePipes(
+  //   new ValidationPipe({
+  //     transform: true,
+  //     whitelist: true
+  //   })
+  // )
+  // @ApiBearerAuth()
+  // async getDoctors(@Query() doctorQuery: GetDoctorsQueryDto) {
+  //   const response = await this.adminService.getDoctors(doctorQuery);
+  //   return plainToInstance(DoctorListResponseDto, response);
+  // }
 
-  @Get('dashboard/kpis')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  async getKpis() {
-    return await this.adminService.getDashboardKpis();
-  }
+  // @Get('dashboard/kpis')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // async getKpis() {
+  //   return await this.adminService.getDashboardKpis();
+  // }
 
-  @Get('doctor-documents/:id')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  async getDoctorDocuments(@Param('id', ParseUUIDPipe) id: string) {
-    return await this.adminService.getDoctorDocuments(id);
-  }
+  // @Get('doctor-documents/:id')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  // async getDoctorDocuments(@Param('id', ParseUUIDPipe) id: string) {
+  //   return await this.adminService.getDoctorDocuments(id);
+  // }
 
-  @Patch('doctors/:id/status')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  async updateDoctorStatus(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateStatusDto: UpdateDoctorStatusDto
-  ) {
-    return await this.adminService.rejectOrApproveDoctors(id, updateStatusDto);
-  }
+  // @Patch('doctors/:id/status')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  // async updateDoctorStatus(
+  //   @Param('id', ParseUUIDPipe) id: string,
+  //   @Body() updateStatusDto: UpdateDoctorStatusDto
+  // ) {
+  //   return await this.adminService.rejectOrApproveDoctors(id, updateStatusDto);
+  // }
 
-  @Patch('doctors/:id/verify-document')
-  async verifyDocument(
-    @Param('id', ParseUUIDPipe) id: string,
-    @Body() updateStatusDto: UpdateDoctorStatusDto
-  ) {
-    return await this.adminService.rejectOrApproveDoctors(id, updateStatusDto);
-  }
+  // @Patch('doctors/:id/verify-document')
+  // async verifyDocument(
+  //   @Param('id', ParseUUIDPipe) id: string,
+  //   @Body() updateStatusDto: UpdateDoctorStatusDto
+  // ) {
+  //   return await this.adminService.rejectOrApproveDoctors(id, updateStatusDto);
+  // }
 
-  @Get('tickets')
-  @ApiBearerAuth()
-  @UseGuards(AuthGuard)
-  @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
-  async getTickets(
-    @Query() query: GetTicketsQueryDto
-  ): Promise<TicketResponseDto> {
-    return await this.adminService.getTickets(query);
-  }
+  // @Get('tickets')
+  // @ApiBearerAuth()
+  // @UseGuards(AuthGuard)
+  // @Roles(UserRole.ADMIN, UserRole.SUPER_ADMIN)
+  // async getTickets(
+  //   @Query() query: GetTicketsQueryDto
+  // ): Promise<TicketResponseDto> {
+  //   return await this.adminService.getTickets(query);
+  // }
 
   // @Patch('tickets/:id/resolve')
   // @ApiBearerAuth()

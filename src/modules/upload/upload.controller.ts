@@ -4,6 +4,8 @@ import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { AuthGuard } from 'src/guards/auth.guard';
 import { FileFilterCallback } from 'multer';
+import { Roles } from 'src/decorators/roles.decorator';
+import { UserRole } from 'src/enums/roles.enum';
 
 @ApiTags('Documents - Upload')
 @Controller('upload')
@@ -11,6 +13,7 @@ export class UploadController {
   constructor(private readonly uploadService: UploadService) {}
 
   @Post('doctor-documents/:id')
+  @Roles(UserRole.DOCTOR)
   @ApiBearerAuth()
   @UseGuards(AuthGuard)
   @UseInterceptors(

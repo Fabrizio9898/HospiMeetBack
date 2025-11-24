@@ -9,8 +9,8 @@ import {
 } from 'typeorm';
 import { Appointment } from './appointment.entity';
 
-@Entity('user_payments')
-export class UserPayment {
+@Entity('patient_payment')
+export class PatientPayment {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 

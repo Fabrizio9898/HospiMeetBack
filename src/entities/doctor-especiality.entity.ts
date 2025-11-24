@@ -6,11 +6,11 @@ import {
   UpdateDateColumn,
   ManyToMany
 } from 'typeorm';
-import { Doctor } from './doctor.entity'; // Relación inversa
+import { User } from './doctor.entity'; // Relación inversa
 
 @Entity('doctor_specialities')
 export class DoctorSpeciality {
-  @PrimaryGeneratedColumn("uuid")
+  @PrimaryGeneratedColumn('uuid')
   id: string;
 
   @Column({ type: 'varchar', length: 100, unique: true })
@@ -19,8 +19,8 @@ export class DoctorSpeciality {
   @Column({ type: 'text', nullable: true })
   description: string; // ej: 'Consultas generales de salud'
 
-  @ManyToMany(() => Doctor, (doctor) => doctor.specialities) // Si ManyToMany
-  doctors: Doctor[];
+  @ManyToMany(() => User, (doctor) => doctor.specialities) // Si ManyToMany
+  doctors: User[];
 
   @CreateDateColumn()
   createdAt: Date;

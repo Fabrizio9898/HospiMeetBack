@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn
 } from 'typeorm';
-import { Doctor } from './doctor.entity';
+import { User } from './doctor.entity';
 import { Appointment } from './appointment.entity';
 
 @Entity('patients')
@@ -16,7 +16,7 @@ export class Patient {
   id: string;
 
   @Column({ type: 'varchar', length: 150 })
-  name: string; // Nombre completo del paciente
+  fullname: string; // Nombre completo del paciente
 
   @Column({ type: 'varchar', length: 100, nullable: true })
   email?: string; // Opcional: para enviar el link de pago por correo
@@ -28,10 +28,10 @@ export class Patient {
   dni?: string; // Opcional: para facturación o historial médico
 
   // RELACIÓN CLAVE: El paciente "pertenece" a un Doctor
-  @ManyToOne(() => Doctor, (doctor) => doctor.patients, {
+  @ManyToOne(() => User, (doctor) => doctor.patients, {
     onDelete: 'CASCADE' // Si se borra el doctor, se borran sus pacientes (lógica SaaS)
   })
-  doctor: Doctor;
+  doctor: User;
 
   // Un paciente puede tener múltiples turnos históricos o futuros
   @OneToMany(() => Appointment, (appointment) => appointment.patient)

@@ -5,9 +5,8 @@ import {
   ManyToOne,
   CreateDateColumn
 } from 'typeorm';
-import { Doctor } from './doctor.entity';
+import { User } from './doctor.entity';
 import { DoctorDocumentType } from 'src/enums/doctorDocument.enum';
-
 
 @Entity('doctor_documents')
 export class DoctorDocument {
@@ -21,10 +20,10 @@ export class DoctorDocument {
   url: string; // URL del archivo subido (ej. S3)
 
   @Column({ type: 'boolean', default: false })
-  verified: boolean; 
+  verified: boolean;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.documents)
-  doctor: Doctor;
+  @ManyToOne(() => User, (doctor) => doctor.documents)
+  doctor: User;
 
   @CreateDateColumn()
   uploadedAt: Date;

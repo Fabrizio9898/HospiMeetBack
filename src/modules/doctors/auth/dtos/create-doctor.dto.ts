@@ -1,31 +1,21 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
-  IsNotEmpty,
-  Length,
-  IsString,
   IsEmail,
+  IsNotEmpty,
+  IsString,
+  MaxLength,
   Matches,
+  Length,
+
 } from 'class-validator';
 
-
-export class CreateUserDto {
-  @ApiProperty({
-    example: 'Tom Howard'
-  })
-  @IsNotEmpty()
-  @Length(3, 50)
-  @IsString()
-  @Matches(/^[a-zA-Z\s]+$/, {
-    message: 'El nombre solo puede contener letras y espacios'
-  })
-  fullname: string;
-
+export class CreateDoctorDto {
   @ApiProperty({
     example: 'TomHoward@mail.com'
   })
+  @IsEmail({}, { message: 'Email inválido' })
   @IsNotEmpty()
-  @IsEmail()
-  @Length(3, 50)
+  @MaxLength(100)
   email: string;
 
   @ApiProperty({ example: 'Password123' })
@@ -37,4 +27,13 @@ export class CreateUserDto {
       'Password must contain at least one uppercase letter and one number.'
   })
   password: string;
+
+  @ApiProperty({ name: 'fullname', example: 'fabrizio andrade' })
+  @IsString()
+  @IsNotEmpty()
+  @MaxLength(100)
+  @Matches(/^[a-zA-Z\s]+$/, {
+    message: 'El nombre solo puede contener letras y espacios'
+  })
+  fullname: string;
 }

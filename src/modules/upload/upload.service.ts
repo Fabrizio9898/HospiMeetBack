@@ -5,10 +5,14 @@ import {
   NotFoundException
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { GetObjectCommand, PutObjectCommand, S3Client } from '@aws-sdk/client-s3';
+import {
+  GetObjectCommand,
+  PutObjectCommand,
+  S3Client
+} from '@aws-sdk/client-s3';
 import path from 'path';
 import { randomUUID } from 'crypto';
-import { Doctor } from 'src/entities/doctor.entity';
+import { User } from 'src/entities/doctor.entity';
 import { DoctorDocument } from 'src/entities/doctor-documentation.entity';
 import { DataSource, In, Repository } from 'typeorm';
 import { DoctorDocumentType } from 'src/enums/doctorDocument.enum';
@@ -28,7 +32,7 @@ export class UploadService {
 
   constructor(
     private readonly configService: ConfigService,
-    private readonly dataSource: DataSource,
+    private readonly dataSource: DataSource
   ) {
     this.region = this.configService.getOrThrow<string>('AWS_S3_REGION');
     this.bucketName =
@@ -90,7 +94,7 @@ export class UploadService {
     urlFrente: string,
     urlDorso: string,
     urlLicencia: string
-  ): Promise<Doctor> {
+  ): Promise<User> {
     // 1. Iniciar el "Query Runner" para la transacción
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -98,7 +102,7 @@ export class UploadService {
 
     try {
       // 2. Buscar al doctor (DENTRO de la transacción)
-      const doctor = await queryRunner.manager.findOneBy(Doctor, {
+      const doctor = await queryRunner.manager.findOneBy(User, {
         id: userId
       });
       if (!doctor) {
@@ -164,7 +168,7 @@ export class UploadService {
   async generateSignedUrl(documentUrl: string): Promise<string> {
     try {
       const urlObject = new URL(documentUrl);
-      const s3Key = urlObject.pathname.substring(1); 
+      const s3Key = urlObject.pathname.substring(1);
 
       const command = new GetObjectCommand({
         Bucket: this.bucketName,

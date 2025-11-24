@@ -1,14 +1,14 @@
 import { PickType, ApiProperty } from '@nestjs/swagger';
-import { Doctor } from 'src/entities/doctor.entity';
+import { User } from 'src/entities/doctor.entity';
 
-export class DoctorPublicDto extends PickType(Doctor, [
+export class DoctorPublicDto extends PickType(User, [
   'id',
   'fullname',
   'email',
   'dni',
   'phoneNumber',
   'status',
-  "tarifaPorConsulta"
+  'tarifaPorConsulta'
 ] as const) {
   @ApiProperty({
     example: 3,

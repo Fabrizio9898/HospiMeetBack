@@ -5,7 +5,7 @@ import {
   ManyToOne,
   CreateDateColumn
 } from 'typeorm';
-import { Doctor } from './doctor.entity';
+import { User } from './doctor.entity';
 
 @Entity('doctor_weekly_availability')
 export class DoctorAvailability {
@@ -24,8 +24,8 @@ export class DoctorAvailability {
   @Column({ type: 'int', default: 30 }) // Minutos por cita
   duracionCita: number;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.disponibilidades)
-  doctor: Doctor;
+  @ManyToOne(() => User, (doctor) => doctor.disponibilidades)
+  doctor: User;
 
   @Column()
   doctorId: number;

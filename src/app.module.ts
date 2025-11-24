@@ -2,10 +2,8 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import dbConfig from './config/db.config';
-import { UsersModule } from './modules/users/users.module';
-import { DoctorsModule } from './modules/doctors/doctors.module';
+import { UserModule } from './modules/doctors/doctors.module';
 import { JwtModule } from '@nestjs/jwt';
-import { Users_AuthModule } from './modules/users/auth/auth.module';
 import { Doctors_AuthModule } from './modules/doctors/auth/auth.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { UploadModule } from './modules/upload/upload.module';
@@ -25,10 +23,7 @@ import { EmailModule } from './modules/email/email.module';
       signOptions: { expiresIn: '1h' },
       secret: process.env.JWT_SECRET
     }),
-
-    UsersModule,
-    DoctorsModule,
-    Users_AuthModule,
+    UserModule,
     Doctors_AuthModule,
     AdminModule,
     EmailModule,

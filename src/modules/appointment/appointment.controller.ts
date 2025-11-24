@@ -32,3 +32,36 @@ export class AppointmentController {
     return this.appointmentService.remove(+id);
   }
 }
+
+/*
+POST /appointments
+
+Crear appointment.
+Body: paciente existente o fields de paciente nuevo.
+Opciones:
+
+recurrente: true/false
+
+tipo: presencial / videollamada
+
+fecha/hora
+
+Si es recurrente → se generan automáticamente los próximos.
+
+GET /appointments
+
+Todos los turnos del doctor (con filtros: fecha, estado, paciente).
+
+GET /appointments/:id
+
+Ver un turno.
+
+PATCH /appointments/:id
+
+Actualizar: fecha, estado, paciente, notas.
+
+DELETE /appointments/:id
+
+Cancelar turno (si ya está con pago, ver política luego).
+
+*/

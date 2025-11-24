@@ -1,15 +1,22 @@
-import { SubscriptionPlan } from "src/dtos/subscriptionPlan.dto";
-import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
-import { Doctor } from "./doctor.entity";
-import { SubscriptionStatus } from "src/dtos/subscriptionStatus.dto";
+import { SubscriptionPlan } from 'src/dtos/subscriptionPlan.dto';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+  UpdateDateColumn
+} from 'typeorm';
+import { User } from './doctor.entity';
+import { SubscriptionStatus } from 'src/dtos/subscriptionStatus.dto';
 
 @Entity('subscriptions')
 export class Subscription {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.subscriptions)
-  doctor: Doctor;
+  @ManyToOne(() => User, (doctor) => doctor.subscriptions)
+  doctor: User;
 
   @Column({ type: 'enum', enum: SubscriptionPlan })
   plan: SubscriptionPlan; // FREE_TRIAL, BASIC, PREMIUM, ENTERPRISE

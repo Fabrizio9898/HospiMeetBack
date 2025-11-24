@@ -1,10 +1,8 @@
 import { PickType } from '@nestjs/swagger';
-import { User } from 'src/entities/user.entity';
+import { Patient } from 'src/entities/patient.entity';
 
-export class PatientResponseDto extends PickType(User, [
+export class PatientResponseDto extends PickType(Patient, [
   'id',
   'fullname',
   'email',
-  "appointments",
-  "reviews"
 ] as const) {}

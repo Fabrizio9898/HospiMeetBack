@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { ApiStatusEnum } from 'src/enums/apiStatus.enum';
-import { DoctorClean } from '../../dto/doctor-clean.dto';
+import { DoctorClean } from './doctor-clean.dto';
 
 export class DoctorLoginResponse {
   @ApiProperty({

@@ -8,7 +8,7 @@ import {
   OneToMany,
   OneToOne
 } from 'typeorm';
-import { Doctor } from './doctor.entity';
+import { User } from './doctor.entity';
 import { DoctorPaymentStatus } from 'src/enums/doctorPaymentStatus.enum';
 import { Appointment } from './appointment.entity';
 
@@ -39,10 +39,10 @@ export class DoctorPayment {
   @OneToMany(() => Appointment, (appt) => appt.doctorPayment)
   appointments: Appointment[];
 
-  @ManyToOne(() => Doctor, (doctor) => doctor.pagosHonorarios, {
+  @ManyToOne(() => User, (doctor) => doctor.pagosHonorarios, {
     onDelete: 'CASCADE'
   })
-  doctor: Doctor;
+  doctor: User;
 
   @CreateDateColumn()
   paidAt: Date;
