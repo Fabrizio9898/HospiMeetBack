@@ -11,9 +11,6 @@ export class CreateAppointmentDto {
 dateHour:Date
 
 @ApiProperty()
-status:AppointmentStatus;
-
-@ApiProperty()
 @IsNumber({maxDecimalPlaces:2})
 @Min(0)
 cost:number

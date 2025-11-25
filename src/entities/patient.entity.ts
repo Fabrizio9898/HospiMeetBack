@@ -5,12 +5,15 @@ import {
   ManyToOne,
   OneToMany,
   CreateDateColumn,
-  UpdateDateColumn
+  UpdateDateColumn,
+  Index
 } from 'typeorm';
 import { User } from './user.entity';
 import { Appointment } from './appointment.entity';
 
 @Entity('patients')
+@Index(['dni', 'doctor'], { unique: true, where: '"dni" IS NOT NULL' })
+@Index(['email', 'doctor'], { unique: true, where: '"email" IS NOT NULL' })
 export class Patient {
   @PrimaryGeneratedColumn('uuid')
   id: string;

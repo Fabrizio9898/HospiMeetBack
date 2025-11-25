@@ -7,11 +7,11 @@ import { Repository } from 'typeorm';
 @Injectable()
 export class UserService {
   constructor(
-    @InjectRepository(User) private doctorRepository: Repository<User>
+    @InjectRepository(User) private userRepository: Repository<User>
   ) {}
 
   async getByEmail(email: string): Promise<User | undefined> {
-    const found: User | null = await this.doctorRepository.findOne({
+    const found: User | null = await this.userRepository.findOne({
       where: { email: email },
       relations: ['boss'] 
     });
@@ -21,4 +21,9 @@ export class UserService {
   async update(id: number, updateDoctorDto: UpdateDoctorDto) {
     return `This action updates a #${id} doctor`;
   }
+
+
+
+
+  
 }
