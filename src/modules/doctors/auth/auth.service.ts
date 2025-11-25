@@ -14,7 +14,7 @@ import { Doctor_Status } from 'src/enums/doctorStatus.enum';
 import { ApiStatusEnum } from 'src/enums/apiStatus.enum';
 import { generateToken } from 'src/utils/jwt.util';
 import { CreateDoctorDto } from './dtos/create-doctor.dto';
-import { User } from 'src/entities/doctor.entity';
+import { User } from 'src/entities/user.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApiError } from 'src/helpers/apiError.helper';
@@ -114,5 +114,4 @@ export class AuthService {
       throw new ApiError(error?.message, InternalServerErrorException, error);
     }
   }
-
 }

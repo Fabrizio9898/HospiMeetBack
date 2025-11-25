@@ -12,7 +12,7 @@ import {
 } from '@aws-sdk/client-s3';
 import path from 'path';
 import { randomUUID } from 'crypto';
-import { User } from 'src/entities/doctor.entity';
+import { User } from 'src/entities/user.entity';
 import { DoctorDocument } from 'src/entities/doctor-documentation.entity';
 import { DataSource, In, Repository } from 'typeorm';
 import { DoctorDocumentType } from 'src/enums/doctorDocument.enum';

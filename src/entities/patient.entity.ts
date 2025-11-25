@@ -7,7 +7,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn
 } from 'typeorm';
-import { User } from './doctor.entity';
+import { User } from './user.entity';
 import { Appointment } from './appointment.entity';
 
 @Entity('patients')

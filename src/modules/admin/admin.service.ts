@@ -28,7 +28,7 @@ import { GetTicketsQueryDto } from './dto/getTicketsQuery.dto';
 import { TicketResponseDto } from './dto/ticket-response.dto';
 import { PatientResponseDto } from './dto/patientResponse.dto';
 import { isEmpty } from 'class-validator';
-import { User } from 'src/entities/doctor.entity';
+import { User } from 'src/entities/user.entity';
 
 @Injectable()
 export class AdminService {

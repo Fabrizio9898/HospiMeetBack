@@ -6,7 +6,7 @@ import {
   UpdateDateColumn,
   ManyToMany
 } from 'typeorm';
-import { User } from './doctor.entity'; // Relación inversa
+import { User } from './user.entity'; // Relación inversa
 
 @Entity('doctor_specialities')
 export class DoctorSpeciality {

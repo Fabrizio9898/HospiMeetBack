@@ -10,7 +10,7 @@ import { TicketPriority } from 'src/enums/tickets/ticketPriority.enum';
 import { TicketCategory } from 'src/enums/tickets/ticketCategory.enum';
 import { Appointment } from './appointment.entity';
 import { TicketStatus } from 'src/enums/tickets/ticketStatus.enum';
-import { User } from './doctor.entity';
+import { User } from './user.entity';
 import { UserRole } from 'src/enums/roles.enum';
 import { TicketReason } from 'src/enums/tickets/ticketReason.enum';
 

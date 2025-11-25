@@ -6,7 +6,8 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToMany,
-  JoinTable
+  JoinTable,
+  ManyToOne
 } from 'typeorm';
 import { DoctorSchedule } from './doctor-schedules.entity';
 import { Appointment } from './appointment.entity';
@@ -35,14 +36,14 @@ export class User {
   @Column({ type: 'varchar', length: 100, unique: true })
   email: string;
 
-  @Column({ type: 'varchar', length: 255 })
+  @Column({ type: 'varchar', length: 255, select: false })
   password: string;
 
   @Column({ type: 'varchar', length: 100 })
   fullname: string;
 
   @Column({ type: 'varchar', nullable: true })
-  stripeCustomerId: string; 
+  stripeCustomerId: string;
 
   @Column({
     type: 'enum',
@@ -92,6 +93,15 @@ export class User {
   @OneToMany(() => Patient, (patient) => patient.doctor)
   patients: Patient[];
 
+  @ManyToOne(() => User, (user) => user.assistants, {
+    nullable: true,
+    onDelete: 'SET NULL'
+  })
+  boss: User;
+
+  @OneToMany(() => User, (user) => user.boss)
+  assistants: User[];
+  
   @OneToMany(() => Subscription, (sub) => sub.doctor)
   subscriptions: Subscription[];
 

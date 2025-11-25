@@ -8,7 +8,7 @@ import {
   OneToMany,
   OneToOne
 } from 'typeorm';
-import { User } from './doctor.entity';
+import { User } from './user.entity';
 import { DoctorPaymentStatus } from 'src/enums/doctorPaymentStatus.enum';
 import { Appointment } from './appointment.entity';
 

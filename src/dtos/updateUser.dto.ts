@@ -7,7 +7,7 @@ import {
   Matches,
   Validate
 } from 'class-validator';
-import { User } from 'src/entities/doctor.entity';
+import { User } from 'src/entities/user.entity';
 import { MatchPassword } from 'src/validator/matchPassword.validator';
 
 export class UpdateUserDto extends PartialType(

@@ -7,7 +7,7 @@ import {
   UpdateDateColumn,
   OneToOne
 } from 'typeorm';
-import { User } from './doctor.entity';
+import { User } from './user.entity';
 import { Appointment } from './appointment.entity';
 import { DoctorScheduleStatus } from 'src/enums/doctor-schedule.enum';
 

@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn
 } from 'typeorm';
-import { User } from './doctor.entity';
+import { User } from './user.entity';
 import { SubscriptionStatus } from 'src/dtos/subscriptionStatus.dto';
 
 @Entity('subscriptions')

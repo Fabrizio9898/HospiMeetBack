@@ -7,7 +7,7 @@ import { UserModule } from '../doctors/doctors.module';
 import { Appointment } from 'src/entities/appointment.entity';
 import { UploadModule } from '../upload/upload.module';
 import { SupportTicket } from 'src/entities/SupportTicket.entity';
-import { User } from 'src/entities/doctor.entity';
+import { User } from 'src/entities/user.entity';
 
 @Module({
   imports: [

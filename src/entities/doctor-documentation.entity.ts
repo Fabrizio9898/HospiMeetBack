@@ -5,7 +5,7 @@ import {
   ManyToOne,
   CreateDateColumn
 } from 'typeorm';
-import { User } from './doctor.entity';
+import { User } from './user.entity';
 import { DoctorDocumentType } from 'src/enums/doctorDocument.enum';
 
 @Entity('doctor_documents')

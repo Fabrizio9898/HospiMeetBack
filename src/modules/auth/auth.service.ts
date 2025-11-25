@@ -15,7 +15,7 @@ import { EmailService } from 'src/modules/email/email.service';
 import { UserRole } from 'src/enums/roles.enum';
 import * as crypto from 'crypto';
 import { ResetPasswordDto } from 'src/dtos/resetPassword.dto';
-import { User } from 'src/entities/doctor.entity';
+import { User } from 'src/entities/user.entity';
 import { UserService } from '../doctors/doctors.service';
 
 @Injectable()
@@ -90,7 +90,4 @@ export class AuthService {
     const user = await this.userService.getByEmail(email.toLowerCase());
     return { exists: !!user };
   }
-  
-
-
 }

@@ -5,7 +5,7 @@ import {
   ManyToOne,
   CreateDateColumn
 } from 'typeorm';
-import { User } from './doctor.entity';
+import { User } from './user.entity';
 
 @Entity('doctor_weekly_availability')
 export class DoctorAvailability {

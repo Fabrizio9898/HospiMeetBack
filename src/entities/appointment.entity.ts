@@ -9,7 +9,7 @@ import {
   JoinColumn,
   OneToMany
 } from 'typeorm';
-import { User } from './doctor.entity';
+import { User } from './user.entity';
 import { PatientPayment } from './user-payment.entity';
 import { DoctorSchedule } from './doctor-schedules.entity';
 import { AppointmentStatus } from 'src/enums/appointment.enum';
