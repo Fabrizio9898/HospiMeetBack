@@ -14,7 +14,7 @@ import { Appointment } from './appointment.entity';
 import { DoctorPayment } from './doctor-payment.entity';
 import { DoctorSpeciality } from './doctor-especiality.entity';
 import { DoctorAvailability } from './doctor-availability.entity';
-import { Doctor_Status } from 'src/enums/doctorStatus.enum';
+import { User_Status } from 'src/enums/userStatus.enum';
 import { DoctorDocument } from './doctor-documentation.entity';
 import { UserRole } from 'src/enums/roles.enum';
 import { SupportTicket } from './SupportTicket.entity';
@@ -66,10 +66,10 @@ export class User {
 
   @Column({
     type: 'enum',
-    enum: Doctor_Status,
-    default: Doctor_Status.INACTIVE
+    enum: User_Status,
+    default: User_Status.INACTIVE
   })
-  status: Doctor_Status;
+  status: User_Status;
 
   @Column({ name: 'reset_password_token', nullable: true })
   resetPasswordToken: string;
@@ -101,8 +101,8 @@ export class User {
 
   @OneToMany(() => User, (user) => user.boss)
   assistants: User[];
-  
-  @OneToMany(() => Subscription, (sub) => sub.doctor)
+
+  @OneToMany(() => Subscription, (sub) => sub.user)
   subscriptions: Subscription[];
 
   @OneToMany(() => SupportTicket, (ticket) => ticket.doctor)

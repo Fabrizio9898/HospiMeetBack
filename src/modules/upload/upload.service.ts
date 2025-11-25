@@ -16,7 +16,7 @@ import { User } from 'src/entities/user.entity';
 import { DoctorDocument } from 'src/entities/doctor-documentation.entity';
 import { DataSource, In, Repository } from 'typeorm';
 import { DoctorDocumentType } from 'src/enums/doctorDocument.enum';
-import { Doctor_Status } from 'src/enums/doctorStatus.enum';
+import { User_Status } from 'src/enums/userStatus.enum';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 type VerificationFiles = {
   dni_front?: Express.Multer.File[];
@@ -143,14 +143,9 @@ export class UploadService {
       // 5. Guardar los NUEVOS documentos (DENTRO de la transacción)
       await queryRunner.manager.save([docFrente, docDorso, docLicencia]);
 
-      // 6. Actualizar el estado del Doctor (DENTRO de la transacción)
-      doctor.status = Doctor_Status.PENDING;
-      doctor.rejectedReason = null;
-      const updatedDoctor = await queryRunner.manager.save(doctor);
-
       // 7. Si todo salió bien, confirmar la transacción
       await queryRunner.commitTransaction();
-      return updatedDoctor;
+      return doctor;
     } catch (error) {
       // 8. Si algo falló, revertir todo
       await queryRunner.rollbackTransaction();

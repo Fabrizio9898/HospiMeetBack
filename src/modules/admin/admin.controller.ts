@@ -9,7 +9,7 @@ import {
   Query,
   UsePipes,
   ValidationPipe,
-  ParseUUIDPipe,
+  ParseUUIDPipe
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { CreateAdminDto } from './dto/create-admin.dto';
@@ -21,7 +21,7 @@ import { LoginDto } from 'src/dtos/login.dto';
 import { GetDoctorsQueryDto } from './dto/doctorQuery.dto';
 import { plainToInstance } from 'class-transformer';
 import { DoctorListResponseDto } from './dto/doctorResponse.dto';
-import { UpdateDoctorStatusDto } from './dto/updateDoctorStatus.dto';
+import { UpdateDoctorStatusDto } from './dto/updateUserStatus.dto';
 import { GetTicketsQueryDto } from './dto/getTicketsQuery.dto';
 import { TicketResponseDto } from './dto/ticket-response.dto';
 

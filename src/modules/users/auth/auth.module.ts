@@ -1,7 +1,7 @@
 import { Module } from '@nestjs/common';
 import { AuthController } from './auth.controller';
 import { AuthService } from './auth.service';
-import { UserModule } from '../doctors.module';
+import { UserModule } from '../user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 
@@ -10,4 +10,4 @@ import { User } from 'src/entities/user.entity';
   controllers: [AuthController],
   providers: [AuthService]
 })
-export class Doctors_AuthModule {}
+export class User_Auth_Module {}

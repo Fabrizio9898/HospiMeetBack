@@ -1,10 +1,10 @@
 import { IsEnum, IsNotEmpty, IsOptional, IsString } from 'class-validator';
-import { Doctor_Status } from 'src/enums/doctorStatus.enum';
+import { User_Status } from 'src/enums/userStatus.enum';
 
 export class UpdateDoctorStatusDto {
   @IsNotEmpty()
-  @IsEnum(Doctor_Status)
-  status: Doctor_Status;
+  @IsEnum(User_Status)
+  status: User_Status;
 
   @IsString()
   @IsOptional()

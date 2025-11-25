@@ -16,7 +16,7 @@ export class Subscription {
   id: string;
 
   @ManyToOne(() => User, (doctor) => doctor.subscriptions)
-  doctor: User;
+  user: User;
 
   @Column({ type: 'enum', enum: SubscriptionPlan })
   plan: SubscriptionPlan; // FREE_TRIAL, BASIC, PREMIUM, ENTERPRISE

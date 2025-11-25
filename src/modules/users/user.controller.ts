@@ -8,7 +8,7 @@ import {
   Delete,
   ParseUUIDPipe
 } from '@nestjs/common';
-import { UserService } from './doctors.service';
+import { UserService } from './user.service';
 import { UpdateDoctorDto } from './dto/update-doctor.dto';
 
 @Controller('doctors')

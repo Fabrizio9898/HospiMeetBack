@@ -12,7 +12,8 @@ export class UserService {
 
   async getByEmail(email: string): Promise<User | undefined> {
     const found: User | null = await this.doctorRepository.findOne({
-      where: { email: email }
+      where: { email: email },
+      relations: ['boss'] 
     });
     return found || undefined;
   }

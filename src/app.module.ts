@@ -2,12 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule, TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import dbConfig from './config/db.config';
-import { UserModule } from './modules/doctors/doctors.module';
 import { JwtModule } from '@nestjs/jwt';
-import { Doctors_AuthModule } from './modules/doctors/auth/auth.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { EmailModule } from './modules/email/email.module';
+import { UserModule } from './modules/users/user.module';
+import { User_Auth_Module } from './modules/users/auth/auth.module';
 
 @Module({
   imports: [
@@ -24,7 +24,7 @@ import { EmailModule } from './modules/email/email.module';
       secret: process.env.JWT_SECRET
     }),
     UserModule,
-    Doctors_AuthModule,
+    User_Auth_Module,
     AdminModule,
     EmailModule,
     UploadModule
