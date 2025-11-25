@@ -15,7 +15,7 @@ export class AppointmentService {
   constructor(
     @InjectRepository(Appointment)
     private readonly appointmentRepository: Repository<Appointment>,
-    private readonly patientService: PatientService // Inyectamos para reutilizar lógica
+    private readonly patientService: PatientService
   ) {}
 
   // 1. Crear Turno (Maneja paciente nuevo o existente)
@@ -49,15 +49,13 @@ export class AppointmentService {
 
     // Calculamos costos (Ejemplo simple)
     const cost = createDto.cost;
-    const platformFee = cost * 0.05; // 5% comisión plataforma (ejemplo)
-    const netIncome = cost - platformFee;
+    const netIncome = cost ;
 
     const newAppointment = this.appointmentRepository.create({
       dateHour: createDto.dateHour,
       status: AppointmentStatus.PENDING,
       meetingLink: meetingLink,
       cost: cost,
-      platformFee: platformFee,
       doctorNetIncome: netIncome,
       patient: patient, // Relación con Paciente
       doctor: { id: doctorId } // Relación con el Doctor (User entity)
@@ -85,7 +83,7 @@ export class AppointmentService {
         id: appointmentId,
         doctor: { id: doctorId } // Seguridad: solo el dueño puede verlo
       },
-      relations: ['patient', 'transaction'] // Traemos paciente y si ya pagó (transaction)
+      relations: ['patient', 'pago'] // Traemos paciente y si ya pagó (transaction)
     });
 
     if (!appointment) {

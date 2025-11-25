@@ -15,7 +15,10 @@ export class PatientPayment {
   id: string;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
-  monto: number; // Monto pagado por la cita
+  amount: number; // Monto pagado por la cita
+
+  @Column({ type: 'varchar', nullable: true })
+  externalId: string;
 
   @Column({ type: 'varchar', length: 50, default: 'pendiente' }) // 'pendiente', 'completado', 'rechazado'
   estado: string;
