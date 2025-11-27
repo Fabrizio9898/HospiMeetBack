@@ -4,6 +4,14 @@ import { PaymentProvider } from 'src/enums/paymentProvider.enum';
 import { MercadoPagoConfig, PreApproval } from 'mercadopago'; 
 import { UserService } from '../users/user.service';
 import { ConfigService } from '@nestjs/config';
+import { PlanId } from 'src/enums/planId.enum';
+
+type PlanConfig = {
+  title: string;
+  mpPrice: number;
+  stripeId: string;
+};
+
 @Injectable()
 export class PaymentService {
   private client: MercadoPagoConfig;
@@ -16,45 +24,32 @@ export class PaymentService {
     });
   }
 
-  private readonly PLAN_MAP = {
-    PLAN_PROFESSIONAL: {
+  private readonly PLAN_MAP: Record<PlanId, PlanConfig> = {
+    [PlanId.PROFESSIONAL]: {
       title: 'SaaS Médico - Plan Profesional',
       stripeId: 'price_1Q5x...', // ID de Stripe (Obligatorio crearlo en Stripe)
       mpPrice: 30000 // Precio en ARS para MercadoPago
     }
   };
 
-  async createCheckout(user: any, dto: CreateCheckOutDto) {
-    // user: any o User entity
+  async createCheckout(user, dto: CreateCheckOutDto) {
+    const plan = this.PLAN_MAP[dto.planId];
 
-    // 1. Validar que el plan existe en nuestro mapa
-    const selectedPlan = this.PLAN_MAP[dto.planId];
-    if (!selectedPlan) {
-      throw new BadRequestException('El plan seleccionado no es válido');
-    }
+    if (!plan) throw new BadRequestException('El plan no existe');
 
-    // 2. Lógica para MERCADOPAGO (Argentina)
     if (dto.provider === PaymentProvider.MERCADOPAGO) {
-      return this.generateMercadoPagoLink(
-        user,
-        selectedPlan.mpPrice,
-        selectedPlan.title
-      );
+      return this.generateMercadoPagoLink(user, plan);
     }
 
-    // 3. Lógica para STRIPE (Internacional)
     if (dto.provider === PaymentProvider.STRIPE) {
-      return this.generateStripeLink(user, selectedPlan.stripeId);
+      return this.generateStripeLink(user, plan.stripeId);
     }
-  }
 
+    throw new BadRequestException('Proveedor inválido');
+  }
   // --- MÉTODOS PRIVADOS (Aquí iría la integración real) ---
 
-  private async generateMercadoPagoLink(
-    user: any,
-    price: number,
-    title: string
-  ) {
+  private async generateMercadoPagoLink(user: any, plan:PlanConfig) {
     try {
       // 2. Instanciamos la clase de Suscripciones
       const preapproval = new PreApproval(this.client);
@@ -62,16 +57,16 @@ export class PaymentService {
       // 3. Creamos la solicitud de suscripción
       const response = await preapproval.create({
         body: {
-          reason: title, // Título que ve el usuario
-          external_reference: user.id, // CLAVE: Tu ID de usuario para identificarlo cuando pague
+          reason: plan.title,
+          external_reference: user.id,
           payer_email: user.email,
           auto_recurring: {
             frequency: 1,
             frequency_type: 'months',
-            transaction_amount: price, // PRECIO DEL PLAN
+            transaction_amount: plan.mpPrice, // PRECIO DEL PLAN
             currency_id: 'ARS'
           },
-          back_url: 'https://tu-saas.com/dashboard', // A donde vuelve después de pagar
+          back_url: 'https://tu-saas.com/dashboard',
           status: 'pending'
         }
       });
