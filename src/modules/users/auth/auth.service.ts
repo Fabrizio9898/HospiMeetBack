@@ -16,9 +16,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { ApiError } from 'src/helpers/apiError.helper';
 import { UserRole } from 'src/enums/roles.enum';
-import { SubscriptionPlan } from 'src/dtos/subscriptionPlan.dto';
+import { SubscriptionPlan } from 'src/enums/subscriptionPlan.enum';
 import { Subscription } from 'src/entities/subscription.entity';
-import { SubscriptionStatus } from 'src/dtos/subscriptionStatus.dto';
+import { SubscriptionStatus } from 'src/enums/subscriptionStatus.enum';
 
 @Injectable()
 export class AuthService {
@@ -28,7 +28,6 @@ export class AuthService {
     @InjectRepository(Subscription)
     private subRepository: Repository<Subscription>
   ) {}
-
 
   async login(loginDto: LoginDto): Promise<DoctorLoginResponse> {
     const { email, password } = loginDto;
